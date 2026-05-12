@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mushroom Consumer Insights</title>
+<title>Mushroom Consumer Insights | Execulytics</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Arial,sans-serif;background:#f5f5f0;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1rem}
-.chat-container{width:100%;max-width:680px;background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,0.10);display:flex;flex-direction:column;height:600px;border:1px solid #e0e0d8}
+.chat-container{width:100%;max-width:680px;background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,0.10);display:flex;flex-direction:column;height:620px;border:1px solid #e0e0d8}
 .chat-header{background:#2d6a4f;color:#fff;padding:1rem 1.25rem;border-radius:16px 16px 0 0;display:flex;align-items:center;gap:12px;flex-shrink:0}
 .header-av{width:44px;height:44px;border-radius:50%;background:#40916c;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:bold;flex-shrink:0}
 .header-info h2{font-size:1rem;font-weight:bold;margin-bottom:2px}
 .header-info p{font-size:12px;opacity:0.8}
-.online-dot{width:8px;height:8px;border-radius:50%;background:#52b788;display:inline-block;margin-right:4px}
+.online-dot{width:8px;height:8px;border-radius:50%;background:#52b788;display:inline-block;margin-right:5px}
 .messages{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:0.75rem}
 .msg{display:flex;gap:8px;align-items:flex-start}
 .msg.user{flex-direction:row-reverse}
@@ -21,15 +21,15 @@ body{font-family:Arial,sans-serif;background:#f5f5f0;display:flex;align-items:ce
 .msg-av.user{background:#dbeafe;color:#1e40af}
 .bubble{max-width:78%;padding:0.65rem 0.95rem;border-radius:14px;font-size:14px;line-height:1.65;color:#1b1b1b;background:#f0f0ea;font-family:Georgia,serif}
 .msg.user .bubble{background:#dbeafe;color:#1e3a5f;font-family:Arial,sans-serif;font-size:13px}
-.source-tag{display:inline-block;font-size:10px;font-family:Arial,sans-serif;padding:2px 7px;border-radius:10px;margin-bottom:5px;font-weight:bold}
+.source-tag{display:inline-block;font-size:10px;font-family:Arial,sans-serif;padding:2px 8px;border-radius:10px;margin-bottom:6px;font-weight:bold}
 .source-web{background:#fff3cd;color:#856404}
 .source-report{background:#d8f3dc;color:#2d6a4f}
-.empty-state{text-align:center;padding:2.5rem 1rem;color:#aaa;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.empty-state{text-align:center;padding:2rem 1rem;color:#aaa;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .empty-state div{font-size:40px;margin-bottom:0.75rem}
 .empty-state h3{font-size:15px;color:#4a4a4a;margin-bottom:0.5rem;font-family:Georgia,serif}
-.empty-state p{font-size:13px;line-height:1.6}
-.suggestions{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:1rem}
-.suggestion{padding:6px 12px;border:1px solid #d8f3dc;border-radius:20px;font-size:12px;color:#2d6a4f;cursor:pointer;background:#f5f5f0;transition:all 0.15s}
+.empty-state p{font-size:13px;line-height:1.6;margin-bottom:1rem}
+.suggestions{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.suggestion{padding:6px 12px;border:1px solid #d8f3dc;border-radius:20px;font-size:12px;color:#2d6a4f;cursor:pointer;background:#f5f5f0;transition:all 0.15s;text-align:left}
 .suggestion:hover{background:#d8f3dc;border-color:#2d6a4f}
 .typing-wrap{display:flex;gap:8px;align-items:flex-start}
 .typing{display:flex;align-items:center;gap:5px;padding:0.65rem 0.95rem;background:#f0f0ea;border-radius:14px}
@@ -44,13 +44,8 @@ body{font-family:Arial,sans-serif;background:#f5f5f0;display:flex;align-items:ce
 .btn-send{padding:0.6rem 1.1rem;background:#2d6a4f;color:#fff;border:none;border-radius:10px;font-size:14px;cursor:pointer;font-weight:bold;height:40px;transition:background 0.15s;white-space:nowrap}
 .btn-send:hover{background:#40916c}
 .btn-send:disabled{background:#aaa;cursor:not-allowed}
-.source-btns{display:flex;gap:6px}
-.src-btn{padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-weight:bold;border:1px solid;transition:all 0.15s}
-.src-btn.report{background:#d8f3dc;color:#2d6a4f;border-color:#b7e4c7}
-.src-btn.report.active{background:#2d6a4f;color:#fff;border-color:#2d6a4f}
-.src-btn.web{background:#fff3cd;color:#856404;border-color:#ffd966}
-.src-btn.web.active{background:#856404;color:#fff;border-color:#856404}
-.footer-note{font-size:10px;color:#aaa;text-align:center;margin-top:4px}
+.footer-note{font-size:10px;color:#aaa;text-align:right}
+.thinking-note{font-size:11px;color:#aaa;font-style:italic}
 </style>
 </head>
 <body>
@@ -66,7 +61,7 @@ body{font-family:Arial,sans-serif;background:#f5f5f0;display:flex;align-items:ce
     <div class="empty-state">
       <div>🍄</div>
       <h3>Hi, I'm Karen!</h3>
-      <p>I'm a mushroom lover and regular Loblaws shopper.<br>Ask me anything about mushrooms — trends, findings from the research, or just what I think!</p>
+      <p>I'm a mushroom lover and regular Loblaws shopper in Mississauga.<br>Ask me anything about mushrooms and I'll do my best to help.</p>
       <div class="suggestions">
         <div class="suggestion" onclick="askSuggestion(this)">What do you think of mushroom prices lately?</div>
         <div class="suggestion" onclick="askSuggestion(this)">What are the latest mushroom trends?</div>
@@ -81,19 +76,15 @@ body{font-family:Arial,sans-serif;background:#f5f5f0;display:flex;align-items:ce
       <button class="btn-send" id="sbtn" onclick="sendMsg()">Send</button>
     </div>
     <div style="display:flex;align-items:center;justify-content:space-between">
-      <div class="source-btns">
-        <div class="src-btn report active" id="btn-report" onclick="setSource('report')">&#128196; From the research</div>
-        <div class="src-btn web" id="btn-web" onclick="setSource('web')">&#127760; Search the internet</div>
-      </div>
+      <div class="thinking-note" id="thinking-note"></div>
       <div class="footer-note">Powered by Execulytics</div>
     </div>
   </div>
 </div>
 
 <script>
-const SERVER_URL = window.SERVER_URL || "https://mushroombot-oqw4.onrender.com";
+const SERVER_URL = "https://mushroombot-oqw4.onrender.com";
 let history = [];
-let useSearch = false;
 let isThinking = false;
 let personaInitials = "KA";
 let personaName = "Karen";
@@ -110,16 +101,8 @@ async function loadPersona(){
   } catch(e){ console.log("Could not load persona", e); }
 }
 
-function setSource(src){
-  useSearch = src === 'web';
-  document.getElementById('btn-report').classList.toggle('active', !useSearch);
-  document.getElementById('btn-web').classList.toggle('active', useSearch);
-}
-
 function askSuggestion(el){
   document.getElementById('qinput').value = el.textContent;
-  if(el.textContent.includes('latest') || el.textContent.includes('trends')) setSource('web');
-  else setSource('report');
   sendMsg();
 }
 
@@ -181,21 +164,21 @@ async function sendMsg(){
   history.push({role:'user', content:q});
   isThinking = true;
   document.getElementById('sbtn').disabled = true;
+  document.getElementById('thinking-note').textContent = 'Karen is thinking...';
   showTyping();
-  const currentSource = useSearch ? 'web' : 'report';
   try {
     const res = await fetch(SERVER_URL + "/api/chat", {
       method: "POST",
       headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({message: q, history: history.slice(-6), use_search: useSearch})
+      body: JSON.stringify({message: q, history: history.slice(-6)})
     });
     const data = await res.json();
     removeTyping();
     if(data.reply){
       history.push({role:'assistant', content:data.reply});
-      addMsg('persona', data.reply, currentSource);
+      addMsg('persona', data.reply, data.source);
     } else {
-      addMsg('persona', "Sorry, I lost my train of thought there. Could you ask me again?", currentSource);
+      addMsg('persona', "Sorry, I lost my train of thought there. Could you ask me again?");
     }
   } catch(err) {
     removeTyping();
@@ -203,6 +186,7 @@ async function sendMsg(){
   }
   isThinking = false;
   document.getElementById('sbtn').disabled = false;
+  document.getElementById('thinking-note').textContent = '';
   document.getElementById('qinput').focus();
 }
 
