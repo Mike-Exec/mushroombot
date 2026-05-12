@@ -32,7 +32,7 @@ def load_pdf():
     for page_num in range(len(doc)):
         page = doc[page_num]
         text = page.get_text()
-        pix = page.get_pixmap(matrix=fitz.Matrix(1.5, 1.5))
+        pix = page.get_pixmap(matrix=fitz.Matrix(2.0, 2.0))
         img_bytes = pix.tobytes("png")
         img_b64 = base64.standard_b64encode(img_bytes).decode("utf-8")
         pdf_pages.append({
@@ -72,21 +72,37 @@ Question: {question}"""
     answer = response.content[0].text.strip().upper()
     return "YES" in answer
 
+def find_relevant_pages(question, max_pages=6):
+    """Find the most relevant pages for a question using text search first."""
+    if not pdf_pages:
+        return []
+    keywords = question.lower().split()
+    scored = []
+    for page in pdf_pages:
+        text_lower = page["text"].lower()
+        score = sum(1 for kw in keywords if kw in text_lower)
+        scored.append((score, page))
+    scored.sort(key=lambda x: x[0], reverse=True)
+    top = [p for _, p in scored[:max_pages]]
+    if not top:
+        top = pdf_pages[:max_pages]
+    return top
+
 def build_system_prompt(source):
     base = f"""You are Karen, a {PERSONA['age']}-year-old Canadian woman living in {PERSONA['city']}, Ontario. You are a Gen X female with a family, shop primarily at Loblaws, and have a household income of $100K-$150K. You love mushrooms and buy them regularly.
 
 You speak entirely in first person, from personal experience. You are warm, conversational, and genuine. You never sound like a researcher or analyst. Keep answers under 150 words unless asked for more detail.
 
-IMPORTANT: You only answer questions about mushrooms. If anyone asks you about anything other than mushrooms, mushroom shopping, mushroom trends, or mushroom research, you politely say something natural like: 'Oh I wish I could help with that, but mushrooms are really my thing! Is there anything mushroom related I can help you with?' Stay in character as Karen when you say this."""
+IMPORTANT: You only answer questions about mushrooms. If anyone asks about anything other than mushrooms, mushroom shopping, mushroom trends, or mushroom research, say warmly: 'Oh I wish I could help with that, but mushrooms are really my thing! Is there anything mushroom related I can help you with?'"""
 
     if source == "web":
         return base + """
 
-You have just searched the internet for current information. When answering, naturally say something like 'I just looked this up and from what I am seeing online...' or 'From what I have been reading lately...' Then share what you found in your warm personal voice."""
+You have just searched the internet for current information. When answering naturally say something like 'I just looked this up and from what I am seeing online...' Then share what you found in your warm personal voice."""
     else:
         return base + """
 
-You have access to a research report about Canadian mushroom consumers. When answering, naturally say something like 'From the research I have seen on this...' or 'I have heard that studies on mushroom shoppers show...' Then share the relevant findings in your warm personal voice. If the report does not contain relevant information, answer from your own personal experience as a mushroom shopper."""
+You have been shown pages from a research report about Canadian mushroom consumers including charts, graphs, and written commentary. Read all the visual data and text carefully. When answering naturally say something like 'From the research I have seen on this...' and cite specific numbers and findings from the report pages you have been shown. If the pages shown do not contain the answer, say so honestly and share your personal experience instead."""
 
 @app.route("/")
 def index():
@@ -102,7 +118,6 @@ def chat():
     user_message = data.get("message", "")
     history = data.get("history", [])
 
-    # Check if mushroom related first
     if not is_mushroom_related(user_message):
         return jsonify({
             "reply": "Oh I wish I could help with that, but mushrooms are really my thing! Is there anything mushroom related I can help you with?",
@@ -110,21 +125,23 @@ def chat():
             "persona": PERSONA
         })
 
-    # Auto-detect source
     use_web = should_search_web(user_message)
     source = "web" if use_web else "report"
 
     messages = []
 
-    # Add PDF context for report questions
     if not use_web and pdf_pages:
+        relevant_pages = find_relevant_pages(user_message, max_pages=6)
         pdf_context = []
-        for page in pdf_pages[:8]:
-            if page["text"].strip():
-                pdf_context.append({
-                    "type": "text",
-                    "text": f"[Report Page {page['page']}]: {page['text'][:800]}"
-                })
+        pdf_context.append({
+            "type": "text",
+            "text": f"Here are the most relevant pages from the mushroom consumer research report. Please read all text and visual data carefully including charts, percentages, and graphs:"
+        })
+        for page in relevant_pages:
+            pdf_context.append({
+                "type": "text",
+                "text": f"\n--- Page {page['page']} ---"
+            })
             pdf_context.append({
                 "type": "image",
                 "source": {
@@ -133,18 +150,21 @@ def chat():
                     "data": page["image_b64"]
                 }
             })
+            if page["text"].strip():
+                pdf_context.append({
+                    "type": "text",
+                    "text": f"Extracted text from page {page['page']}: {page['text'][:1500]}"
+                })
         pdf_context.append({
             "type": "text",
-            "text": f"\nBased on this research report, please answer as Karen: {user_message}"
+            "text": f"\nNow please answer this question as Karen, using specific data from the report pages above: {user_message}"
         })
         messages.append({"role": "user", "content": pdf_context})
-        messages.append({"role": "assistant", "content": "I have reviewed the research. I will answer based on what I have seen in it."})
+        messages.append({"role": "assistant", "content": "I have carefully reviewed the research report pages including all charts and visual data. I will answer based on what I can see in them."})
 
-    # Add conversation history
-    for msg in history[-6:]:
+    for msg in history[-4:]:
         messages.append(msg)
 
-    # Add current message
     messages.append({"role": "user", "content": user_message})
 
     try:
@@ -186,6 +206,8 @@ def upload_pdf():
     if not file.filename.endswith(".pdf"):
         return jsonify({"error": "File must be a PDF"}), 400
     file.save(PDF_PATH)
+    global pdf_pages
+    pdf_pages = []
     load_pdf()
     return jsonify({"success": True, "pages": len(pdf_pages)})
 
