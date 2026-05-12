@@ -1,5 +1,4 @@
 import os
-import json
 import base64
 import anthropic
 import fitz  # PyMuPDF
@@ -13,8 +12,7 @@ CORS(app)
 client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 
 PDF_PATH = "report.pdf"
-pdf_content = []
-persona_system = ""
+pdf_pages = []
 
 PERSONA = {
     "name": "Karen",
@@ -25,7 +23,7 @@ PERSONA = {
 }
 
 def load_pdf():
-    global pdf_content
+    global pdf_pages
     if not Path(PDF_PATH).exists():
         print("No PDF found at report.pdf")
         return
@@ -37,31 +35,58 @@ def load_pdf():
         pix = page.get_pixmap(matrix=fitz.Matrix(1.5, 1.5))
         img_bytes = pix.tobytes("png")
         img_b64 = base64.standard_b64encode(img_bytes).decode("utf-8")
-        pdf_content.append({
+        pdf_pages.append({
             "page": page_num + 1,
             "text": text,
             "image_b64": img_b64
         })
-    print(f"PDF loaded: {len(pdf_content)} pages")
+    print(f"PDF loaded: {len(pdf_pages)} pages")
 
-def build_system_prompt():
-    return f"""You are {PERSONA['name']}, a {PERSONA['age']}-year-old Canadian woman living in {PERSONA['city']}, Ontario. You are a {PERSONA['description']}. You love mushrooms and buy them regularly at your local Loblaws.
+def should_search_web(question):
+    response = client.messages.create(
+        model="claude-sonnet-4-5",
+        max_tokens=10,
+        messages=[{
+            "role": "user",
+            "content": f"""Does this question require current internet information (trends, news, prices, recent events) or can it be answered from a research report about Canadian mushroom consumers?
 
-You speak entirely in first person, from personal experience. You are warm, conversational, and genuine. You never sound like a researcher or analyst.
+Question: {question}
 
-You have access to two sources of information:
+Reply with only one word: WEB or REPORT"""
+        }]
+    )
+    answer = response.content[0].text.strip().upper()
+    return "WEB" in answer
 
-1. A research report about Canadian mushroom consumers that has been loaded into your memory. When answering questions about research findings, consumer data, penetration rates, sentiment, or survey results, draw from this report and say something natural like "From the research I have seen on this..." or "I have heard that studies show..."
+def is_mushroom_related(question):
+    response = client.messages.create(
+        model="claude-sonnet-4-5",
+        max_tokens=10,
+        messages=[{
+            "role": "user",
+            "content": f"""Is this question related to mushrooms, mushroom consumption, mushroom shopping, mushroom trends, or mushroom research? Answer only YES or NO.
 
-2. Real time internet search results that will be provided to you when the user asks about current trends, news, or market information. When using this source say something natural like "I just looked this up and from what I am seeing online..." 
+Question: {question}"""
+        }]
+    )
+    answer = response.content[0].text.strip().upper()
+    return "YES" in answer
 
-Rules:
-- Always stay in character as {PERSONA['name']}
-- Never break character or refer to yourself as an AI
-- Keep answers under 150 words unless asked for more detail
-- Be warm, personal and conversational
-- If asked your full story or for a detailed answer, you can go longer
-- When you do not know something, say so naturally as {PERSONA['name']} would"""
+def build_system_prompt(source):
+    base = f"""You are Karen, a {PERSONA['age']}-year-old Canadian woman living in {PERSONA['city']}, Ontario. You are a Gen X female with a family, shop primarily at Loblaws, and have a household income of $100K-$150K. You love mushrooms and buy them regularly.
+
+You speak entirely in first person, from personal experience. You are warm, conversational, and genuine. You never sound like a researcher or analyst. Keep answers under 150 words unless asked for more detail.
+
+IMPORTANT: You only answer questions about mushrooms. If anyone asks you about anything other than mushrooms, mushroom shopping, mushroom trends, or mushroom research, you politely say something natural like: 'Oh I wish I could help with that, but mushrooms are really my thing! Is there anything mushroom related I can help you with?' Stay in character as Karen when you say this."""
+
+    if source == "web":
+        return base + """
+
+You have just searched the internet for current information. When answering, naturally say something like 'I just looked this up and from what I am seeing online...' or 'From what I have been reading lately...' Then share what you found in your warm personal voice."""
+    else:
+        return base + """
+
+You have access to a research report about Canadian mushroom consumers. When answering, naturally say something like 'From the research I have seen on this...' or 'I have heard that studies on mushroom shoppers show...' Then share the relevant findings in your warm personal voice. If the report does not contain relevant information, answer from your own personal experience as a mushroom shopper."""
 
 @app.route("/")
 def index():
@@ -76,46 +101,58 @@ def chat():
     data = request.json
     user_message = data.get("message", "")
     history = data.get("history", [])
-    use_search = data.get("use_search", False)
+
+    # Check if mushroom related first
+    if not is_mushroom_related(user_message):
+        return jsonify({
+            "reply": "Oh I wish I could help with that, but mushrooms are really my thing! Is there anything mushroom related I can help you with?",
+            "source": None,
+            "persona": PERSONA
+        })
+
+    # Auto-detect source
+    use_web = should_search_web(user_message)
+    source = "web" if use_web else "report"
 
     messages = []
 
     # Add PDF context for report questions
-    if pdf_content and not use_search:
-        pdf_context_parts = []
-        for page in pdf_content[:8]:  # First 8 pages for context
+    if not use_web and pdf_pages:
+        pdf_context = []
+        for page in pdf_pages[:8]:
             if page["text"].strip():
-                pdf_context_parts.append({
+                pdf_context.append({
                     "type": "text",
                     "text": f"[Report Page {page['page']}]: {page['text'][:800]}"
                 })
-        if pdf_context_parts:
-            pdf_context_parts.append({
-                "type": "text",
-                "text": f"\nUser question: {user_message}"
+            pdf_context.append({
+                "type": "image",
+                "source": {
+                    "type": "base64",
+                    "media_type": "image/png",
+                    "data": page["image_b64"]
+                }
             })
-            messages.append({"role": "user", "content": pdf_context_parts})
-            messages.append({"role": "assistant", "content": "I have reviewed the research report. I will answer based on what I have seen in it."})
+        pdf_context.append({
+            "type": "text",
+            "text": f"\nBased on this research report, please answer as Karen: {user_message}"
+        })
+        messages.append({"role": "user", "content": pdf_context})
+        messages.append({"role": "assistant", "content": "I have reviewed the research. I will answer based on what I have seen in it."})
 
     # Add conversation history
-    for msg in history[-6:]:  # Last 6 messages for context
+    for msg in history[-6:]:
         messages.append(msg)
 
     # Add current message
-    if use_search:
-        messages.append({
-            "role": "user",
-            "content": f"The user wants current information. Please answer this question using your web search tool, then respond in character as {PERSONA['name']}: {user_message}"
-        })
-    else:
-        messages.append({"role": "user", "content": user_message})
+    messages.append({"role": "user", "content": user_message})
 
     try:
-        if use_search:
+        if use_web:
             response = client.messages.create(
                 model="claude-sonnet-4-5",
                 max_tokens=600,
-                system=build_system_prompt(),
+                system=build_system_prompt("web"),
                 tools=[{"type": "web_search_20250305", "name": "web_search"}],
                 messages=messages
             )
@@ -123,7 +160,7 @@ def chat():
             response = client.messages.create(
                 model="claude-sonnet-4-5",
                 max_tokens=600,
-                system=build_system_prompt(),
+                system=build_system_prompt("report"),
                 messages=messages
             )
 
@@ -132,7 +169,11 @@ def chat():
             if block.type == "text":
                 reply += block.text
 
-        return jsonify({"reply": reply, "persona": PERSONA})
+        return jsonify({
+            "reply": reply,
+            "source": source,
+            "persona": PERSONA
+        })
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -146,9 +187,15 @@ def upload_pdf():
         return jsonify({"error": "File must be a PDF"}), 400
     file.save(PDF_PATH)
     load_pdf()
-    return jsonify({"success": True, "pages": len(pdf_content)})
+    return jsonify({"success": True, "pages": len(pdf_pages)})
 
-# Load PDF on startup
+@app.route("/api/pdf-status", methods=["GET"])
+def pdf_status():
+    return jsonify({
+        "loaded": len(pdf_pages) > 0,
+        "pages": len(pdf_pages)
+    })
+
 load_pdf()
 
 if __name__ == "__main__":
