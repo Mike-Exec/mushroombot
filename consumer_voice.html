@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mushroom Consumer Voice | Execulytics</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f5f5f0;color:#1b1b1b;min-height:100vh}
+.screen{display:none}
+.screen.active{display:flex;flex-direction:column}
+#setup.active{align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#1b4332 0%,#2d6a4f 60%,#40916c 100%)}
+.sbox{background:#fff;border-radius:14px;padding:2.5rem 2rem;width:100%;max-width:380px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.18)}
+.brand{font-size:11px;letter-spacing:0.12em;color:#2d6a4f;text-transform:uppercase;font-weight:bold;margin-bottom:4px}
+.sbox h1{font-size:1.4rem;font-weight:normal;font-family:Georgia,serif;margin-bottom:4px}
+.sbox p{font-size:13px;color:#767676;margin-bottom:1.5rem;line-height:1.5}
+.sbox input{width:100%;padding:0.65rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:0.75rem;outline:none;font-family:Arial,sans-serif}
+.sbox input:focus{border-color:#40916c}
+.btn-g{width:100%;padding:0.75rem;background:#2d6a4f;color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer;font-weight:bold;transition:background 0.15s}
+.btn-g:hover{background:#40916c}
+.btn-g:disabled{background:#aaa;cursor:not-allowed}
+.err{color:#c0392b;font-size:12px;margin-top:6px}
+#app.active{min-height:100vh}
+.topbar{background:#2d6a4f;color:#fff;padding:0.85rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.topbar .tb{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;opacity:0.75;margin-bottom:2px}
+.topbar h2{font-size:1.1rem;font-weight:normal;font-family:Georgia,serif}
+.btn-sm{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:0.35rem 0.9rem;border-radius:6px;cursor:pointer;font-size:12px}
+.app-body{max-width:900px;margin:0 auto;padding:1.5rem}
+.card{background:#fff;border:1px solid #e0e0d8;border-radius:10px;padding:1.25rem;margin-bottom:1.25rem;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
+.card-title{font-size:11px;font-weight:bold;color:#2d6a4f;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid #d8f3dc}
+.filter-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fg label{font-size:11px;font-weight:bold;color:#4a4a4a;text-transform:uppercase;letter-spacing:0.05em}
+select{padding:0.55rem 0.8rem;border:1px solid #ddd;border-radius:7px;font-size:14px;color:#1b1b1b;background:#fff;width:100%;outline:none;font-family:Arial,sans-serif}
+select:focus{border-color:#40916c}
+.q-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:0.25rem}
+.q-btn{padding:0.65rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:13px;cursor:pointer;background:#fafaf7;color:#4a4a4a;text-align:left;line-height:1.4;transition:all 0.15s}
+.q-btn:hover{border-color:#40916c;color:#2d6a4f;background:#f0faf4}
+.q-btn.active{background:#2d6a4f;color:#fff;border-color:#2d6a4f}
+.q-num{font-size:10px;font-weight:bold;opacity:0.7;display:block;margin-bottom:3px}
+.gen-bar{text-align:center;margin:1.25rem 0}
+.btn-gen{padding:0.85rem 2.5rem;background:#2d6a4f;color:#fff;border:none;border-radius:10px;font-size:15px;cursor:pointer;font-family:Georgia,serif;font-style:italic;transition:all 0.2s;box-shadow:0 4px 16px rgba(45,106,79,0.2)}
+.btn-gen:hover{background:#40916c;transform:translateY(-1px)}
+.btn-gen:disabled{background:#aaa;cursor:not-allowed;transform:none;box-shadow:none}
+.spinner-wrap{text-align:center;padding:2.5rem;display:none}
+.spinner{width:36px;height:36px;border:3px solid #d8f3dc;border-top-color:#2d6a4f;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 0.8rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner-wrap p{font-size:13px;color:#767676;font-style:italic}
+#out-card{display:none}
+.persona-row{display:flex;align-items:center;gap:14px;background:#d8f3dc;border-radius:8px;padding:0.9rem 1.1rem;margin-bottom:1.2rem;border:1px solid #b7e4c7}
+.av{width:48px;height:48px;border-radius:50%;background:#2d6a4f;color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:bold;flex-shrink:0}
+.persona-info h3{font-size:1rem;color:#2d6a4f;margin-bottom:2px;font-family:Georgia,serif}
+.persona-info p{font-size:12px;color:#4a4a4a;line-height:1.5}
+.q-label{display:inline-block;background:#2d6a4f;color:#fff;font-size:11px;padding:3px 10px;border-radius:20px;font-family:Arial,sans-serif;font-weight:bold;margin-bottom:1rem}
+.response-text{font-size:15px;line-height:1.85;color:#1b1b1b;font-family:Georgia,serif}
+.response-text p{margin-bottom:1.1rem}
+.meta-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;flex-wrap:wrap;gap:0.5rem}
+.count-badge{font-size:12px;color:#767676;font-family:Arial,sans-serif;font-style:italic}
+.btn-copy{padding:0.4rem 0.9rem;background:#fafaf7;border:1px solid #ddd;border-radius:6px;font-size:12px;cursor:pointer;color:#4a4a4a;font-family:Arial,sans-serif}
+.btn-copy:hover{border-color:#2d6a4f;color:#2d6a4f}
+.footer{font-size:11px;color:#aaa;text-align:center;margin-top:1.5rem;padding-top:1rem;border-top:1px solid #eee}
+@media(max-width:600px){.filter-grid,.q-grid{grid-template-columns:1fr}.app-body{padding:1rem}}
+</style>
+</head>
+<body>
+
+<div id="setup" class="screen active">
+  <div class="sbox">
+    <div class="brand">Execulytics Consulting</div>
+    <h1>Consumer Voice</h1>
+    <p>Mushroom consumer insights platform.<br>Enter your API key to get started.</p>
+    <input type="password" id="apikey" placeholder="sk-ant-api03-..." />
+    <div style="font-size:11px;color:#aaa;text-align:left;margin-bottom:0.75rem">Get your key at console.anthropic.com</div>
+    <button class="btn-g" onclick="initApp()">Continue</button>
+    <div class="err" id="serr"></div>
+  </div>
+</div>
+
+<div id="app" class="screen">
+  <div class="topbar">
+    <div>
+      <div class="tb">Execulytics Consulting</div>
+      <h2>Mushroom Consumer Voice</h2>
+    </div>
+    <button class="btn-sm" onclick="doLogout()">Sign Out</button>
+  </div>
+  <div class="app-body">
+
+    <div class="card">
+      <div class="card-title">Select Consumer Profile</div>
+      <div class="filter-grid">
+        <div class="fg">
+          <label>Gender</label>
+          <select id="f-gender">
+            <option value="">All genders</option>
+            <option value="Female">Female</option>
+            <option value="Male">Male</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Age Group</label>
+          <select id="f-age">
+            <option value="">All age groups</option>
+            <option value="20–34 years old">20–34 years old</option>
+            <option value="35–49 years old">35–49 years old</option>
+            <option value="50–64 years old">50–64 years old</option>
+            <option value="65 years old or older">65 years old or older</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Household Income</label>
+          <select id="f-income">
+            <option value="">All income levels</option>
+            <option value="Less than $50K">Less than $50K</option>
+            <option value="$50K–$99K">$50K–$99K</option>
+            <option value="$100K–$149K">$100K–$149K</option>
+            <option value="More than $150K">More than $150K</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Region</label>
+          <select id="f-region">
+            <option value="">All regions</option>
+            <option value="Ontario">Ontario</option>
+            <option value="Québec">Québec</option>
+            <option value="Atlantic">Atlantic Canada</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:0.75rem;font-size:12px;color:#767676;font-family:Arial,sans-serif" id="match-count">Select filters to see matching respondents</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Select Question</div>
+      <div class="q-grid">
+        <div class="q-btn active" data-q="q1" onclick="selectQ(this)">
+          <span class="q-num">Question 1</span>
+          Propensity to buy mushrooms other than white or cremini
+        </div>
+        <div class="q-btn" data-q="q2" onclick="selectQ(this)">
+          <span class="q-num">Question 2</span>
+          Awareness and current purchase habits of other varieties
+        </div>
+        <div class="q-btn" data-q="q3" onclick="selectQ(this)">
+          <span class="q-num">Question 3</span>
+          Would recipes or cooking instructions help increase purchase?
+        </div>
+        <div class="q-btn" data-q="q4" onclick="selectQ(this)">
+          <span class="q-num">Question 4</span>
+          Is something other than price holding you back from other varieties?
+        </div>
+      </div>
+    </div>
+
+    <div class="gen-bar">
+      <button class="btn-gen" id="gbtn" onclick="generate()">Generate Consumer Voice</button>
+    </div>
+
+    <div class="spinner-wrap" id="spin">
+      <div class="spinner"></div>
+      <p id="spin-msg">Finding matching consumers and synthesizing their voices...</p>
+    </div>
+
+    <div class="card" id="out-card">
+      <div class="meta-bar">
+        <div>
+          <div class="q-label" id="out-q-label"></div>
+          <div class="count-badge" id="out-count"></div>
+        </div>
+        <button class="btn-copy" onclick="copyOutput()">Copy text</button>
+      </div>
+      <div class="persona-row">
+        <div class="av" id="out-av"></div>
+        <div class="persona-info">
+          <h3 id="out-name"></h3>
+          <p id="out-desc"></p>
+        </div>
+      </div>
+      <div class="response-text" id="out-text"></div>
+    </div>
+
+    <div class="footer">Execulytics Consulting &nbsp;|&nbsp; Consumer Voice Platform &nbsp;|&nbsp; Based on 705 Canadian mushroom consumer interviews</div>
+  </div>
+</div>
+
+<script>
+let API_KEY = "";
+let consumerData = null;
+let selectedQ = "q1";
+
+const QUESTIONS = {
+  q1: "Propensity to buy mushrooms other than white or cremini",
+  q2: "Awareness and current purchase habits of other varieties of mushrooms",
+  q3: "Would recipes or cooking instructions help increase purchase?",
+  q4: "Is something other than price holding you back from other varieties?"
+};
+
+const NAMES = {
+  "Female_20–34 years old": ["Emma","Olivia","Sophie","Chloe","Isabelle","Mia","Zoe","Ava","Lily","Jade"],
+  "Female_35–49 years old": ["Sarah","Jennifer","Michelle","Amanda","Lisa","Karen","Christine","Nicole","Stephanie","Rachel"],
+  "Female_50–64 years old": ["Linda","Patricia","Barbara","Susan","Margaret","Catherine","Diane","Carol","Janet","Anne"],
+  "Female_65 years old or older": ["Dorothy","Betty","Helen","Ruth","Frances","Joan","Mary","Jean","Shirley","Gloria"],
+  "Male_20–34 years old": ["Liam","Noah","Ethan","Lucas","Benjamin","Oliver","Jack","Logan","Mason","Owen"],
+  "Male_35–49 years old": ["James","Michael","David","Daniel","Matthew","Andrew","Ryan","Jason","Kevin","Brian"],
+  "Male_50–64 years old": ["Robert","William","Richard","Thomas","Charles","Stephen","Mark","Paul","George","Donald"],
+  "Male_65 years old or older": ["Harold","Walter","Frank","Raymond","Lawrence","Gerald","Arthur","Eugene","Howard","Ernest"]
+};
+
+function getPersonaName(gender, age) {
+  const key = `${gender}_${age}`;
+  const nameList = NAMES[key] || NAMES["Male_35–49 years old"];
+  return nameList[Math.floor(Math.random() * nameList.length)];
+}
+
+function getInitials(name) {
+  return name.slice(0,2).toUpperCase();
+}
+
+async function initApp() {
+  const key = document.getElementById('apikey').value.trim();
+  if(!key.startsWith('sk-ant-')) {
+    document.getElementById('serr').textContent = 'That does not look like a valid API key.';
+    return;
+  }
+  API_KEY = key;
+
+  // Load consumer data
+  try {
+    const res = await fetch('consumer_data.json');
+    consumerData = await res.json();
+    document.getElementById('setup').classList.remove('active');
+    document.getElementById('app').classList.add('active');
+    updateMatchCount();
+  } catch(err) {
+    document.getElementById('serr').textContent = 'Could not load consumer data. Make sure consumer_data.json is in the same folder.';
+  }
+}
+
+function doLogout() {
+  document.getElementById('app').classList.remove('active');
+  document.getElementById('setup').classList.add('active');
+  API_KEY = '';
+}
+
+function selectQ(el) {
+  document.querySelectorAll('.q-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  selectedQ = el.dataset.q;
+}
+
+function getFilters() {
+  return {
+    gender: document.getElementById('f-gender').value,
+    age: document.getElementById('f-age').value,
+    income: document.getElementById('f-income').value,
+    region: document.getElementById('f-region').value
+  };
+}
+
+function filterData(filters) {
+  return consumerData.filter(r => {
+    if(filters.gender && r.gender !== filters.gender) return false;
+    if(filters.age && r.age !== filters.age) return false;
+    if(filters.income && r.income !== filters.income) return false;
+    if(filters.region && r.region !== filters.region) return false;
+    return true;
+  });
+}
+
+function updateMatchCount() {
+  if(!consumerData) return;
+  const matches = filterData(getFilters());
+  const el = document.getElementById('match-count');
+  if(matches.length === 0) {
+    el.textContent = 'No respondents match this combination. Try broadening your filters.';
+    el.style.color = '#c0392b';
+  } else {
+    el.textContent = `${matches.length} respondent${matches.length !== 1 ? 's' : ''} match this profile`;
+    el.style.color = '#2d6a4f';
+  }
+}
+
+document.querySelectorAll('#app select').forEach(s => {
+  s.addEventListener('change', updateMatchCount);
+});
+
+async function generate() {
+  const filters = getFilters();
+  const matches = filterData(filters);
+
+  if(matches.length === 0) {
+    alert('No respondents match this combination. Please broaden your filters.');
+    return;
+  }
+
+  document.getElementById('gbtn').disabled = true;
+  document.getElementById('spin').style.display = 'block';
+  document.getElementById('out-card').style.display = 'none';
+
+  // Pick a representative name based on gender and age
+  const gender = filters.gender || 'Male';
+  const age = filters.age || '35–49 years old';
+  const personaName = getPersonaName(gender, age);
+  const initials = getInitials(personaName);
+
+  // Build demographic description
+  const parts = [];
+  if(filters.gender) parts.push(filters.gender);
+  if(filters.age) parts.push(filters.age);
+  if(filters.income) parts.push(filters.income);
+  if(filters.region) parts.push(filters.region);
+  const demoDesc = parts.length > 0 ? parts.join(' · ') : 'All Canadian mushroom consumers';
+
+  // Sample up to 30 responses for the question
+  const shuffled = [...matches].sort(() => Math.random() - 0.5);
+  const sample = shuffled.slice(0, 30);
+  const responses = sample.map(r => r[selectedQ]).filter(Boolean);
+
+  if(responses.length === 0) {
+    alert('No responses found for this question and filter combination.');
+    document.getElementById('gbtn').disabled = false;
+    document.getElementById('spin').style.display = 'none';
+    return;
+  }
+
+  const spinMsgs = [
+    'Reading consumer responses...',
+    'Finding the common threads...',
+    'Synthesizing the consumer voice...',
+    'Almost ready...'
+  ];
+  let msgIdx = 0;
+  const spinInterval = setInterval(() => {
+    msgIdx = (msgIdx + 1) % spinMsgs.length;
+    document.getElementById('spin-msg').textContent = spinMsgs[msgIdx];
+  }, 2000);
+
+  const prompt = `You are ${personaName}, a Canadian mushroom consumer with the following profile: ${demoDesc}.
+
+You have been asked: "${QUESTIONS[selectedQ]}"
+
+Below are the actual verbatim responses from ${responses.length} real Canadian consumers who match this demographic profile. Your job is to synthesize these responses into a single first-person narrative of 200-250 words that authentically captures the collective voice and sentiment of this consumer group.
+
+RULES:
+- Speak entirely in first person as ${personaName}
+- Stay completely grounded in what the actual respondents said - do not add opinions or information not present in the responses
+- Capture the dominant themes and sentiments but also note any meaningful variation in views
+- Sound like a real person talking, warm and conversational, not like a research report
+- Do not use bullet points or headers - write flowing prose only
+- Do not mention percentages or counts
+- Do not say "many respondents said" or similar analytical language - speak as yourself
+
+CONSUMER RESPONSES:
+${responses.map((r,i) => `[${i+1}] ${r}`).join('\n\n')}
+
+Now write your 200-250 word first-person synthesis as ${personaName}:`;
+
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": API_KEY,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true"
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-5",
+        max_tokens: 600,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+
+    const data = await res.json();
+    let text = '';
+    if(data.content) data.content.forEach(b => { if(b.type==='text') text += b.text; });
+    if(!text && data.error) throw new Error(data.error.message);
+
+    clearInterval(spinInterval);
+
+    // Display output
+    document.getElementById('out-av').textContent = initials;
+    document.getElementById('out-name').textContent = `${personaName} — ${demoDesc}`;
+    document.getElementById('out-desc').textContent = `Synthesized from ${matches.length} matching consumer response${matches.length !== 1 ? 's' : ''}`;
+    document.getElementById('out-q-label').textContent = QUESTIONS[selectedQ];
+    document.getElementById('out-count').textContent = `${responses.length} responses sampled`;
+
+    const paragraphs = text.split('\n').filter(p => p.trim());
+    document.getElementById('out-text').innerHTML = paragraphs.map(p => `<p>${p}</p>`).join('');
+
+    document.getElementById('out-card').style.display = 'block';
+    document.getElementById('out-card').scrollIntoView({ behavior: 'smooth' });
+
+  } catch(err) {
+    clearInterval(spinInterval);
+    alert('Something went wrong: ' + err.message);
+  }
+
+  document.getElementById('spin').style.display = 'none';
+  document.getElementById('gbtn').disabled = false;
+}
+
+function copyOutput() {
+  const name = document.getElementById('out-name').textContent;
+  const q = document.getElementById('out-q-label').textContent;
+  const text = document.getElementById('out-text').innerText;
+  navigator.clipboard.writeText(`${name}\n${q}\n\n${text}`).then(() => {
+    const b = document.querySelector('.btn-copy');
+    b.textContent = 'Copied!';
+    setTimeout(() => b.textContent = 'Copy text', 2000);
+  });
+}
+</script>
+</body>
+</html>
