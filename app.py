@@ -167,3 +167,48 @@ load_knowledge()
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
+@app.route("/api/consumer-voice", methods=["POST"])
+def consumer_voice_api():
+    data = request.json
+    persona_name = data.get("persona_name", "Sarah")
+    demo_desc = data.get("demo_desc", "Canadian mushroom consumer")
+    question = data.get("question", "")
+    responses = data.get("responses", [])
+
+    if not responses:
+        return jsonify({"error": "No responses provided"}), 400
+
+    prompt = f"""You are {persona_name}, a Canadian mushroom consumer with the following profile: {demo_desc}.
+
+You have been asked: "{question}"
+
+Below are the actual verbatim responses from {len(responses)} real Canadian consumers who match this demographic profile. Your job is to synthesize these responses into a single first-person narrative of 200-250 words that authentically captures the collective voice and sentiment of this consumer group.
+
+RULES:
+- Speak entirely in first person as {persona_name}
+- Stay completely grounded in what the actual respondents said - do not add opinions or information not present in the responses
+- Capture the dominant themes and sentiments but also note any meaningful variation in views
+- Sound like a real person talking, warm and conversational, not like a research report
+- Do not use bullet points or headers - write flowing prose only
+- Do not mention percentages or counts
+- Do not say "many respondents said" or similar analytical language - speak as yourself
+
+CONSUMER RESPONSES:
+{chr(10).join([f'[{i+1}] {r}' for i, r in enumerate(responses)])}
+
+Now write your 200-250 word first-person synthesis as {persona_name}:"""
+
+    try:
+        response = client.messages.create(
+            model="claude-sonnet-4-5",
+            max_tokens=600,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        reply = ""
+        for block in response.content:
+            if block.type == "text":
+                reply += block.text
+        return jsonify({"reply": reply})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
