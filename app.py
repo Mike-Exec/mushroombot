@@ -5,23 +5,23 @@ import fitz  # PyMuPDF
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from pathlib import Path
-
+ 
 app = Flask(__name__)
 CORS(app)
-
+ 
 client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
-
+ 
 PDF_PATH = "report.pdf"
 pdf_pages = []
-
+ 
 PERSONA = {
-    "name": "Karen",
-    "age": 44,
-    "city": "Mississauga",
-    "description": "Gen X female, family with kids, Loblaws shopper, household income $100K-$150K",
-    "initials": "KA"
+    "name": "David Chen",
+    "age": 48,
+    "city": "Toronto",
+    "description": "Consumer Insights Expert, Canadian Produce Industry",
+    "initials": "DC"
 }
-
+ 
 def load_pdf():
     global pdf_pages
     if not Path(PDF_PATH).exists():
@@ -41,7 +41,7 @@ def load_pdf():
             "image_b64": img_b64
         })
     print(f"PDF loaded: {len(pdf_pages)} pages")
-
+ 
 def should_search_web(question):
     response = client.messages.create(
         model="claude-sonnet-4-5",
@@ -49,15 +49,15 @@ def should_search_web(question):
         messages=[{
             "role": "user",
             "content": f"""Does this question require current internet information (trends, news, prices, recent events) or can it be answered from a research report about Canadian mushroom consumers?
-
+ 
 Question: {question}
-
+ 
 Reply with only one word: WEB or REPORT"""
         }]
     )
     answer = response.content[0].text.strip().upper()
     return "WEB" in answer
-
+ 
 def is_mushroom_related(question):
     response = client.messages.create(
         model="claude-sonnet-4-5",
@@ -65,13 +65,13 @@ def is_mushroom_related(question):
         messages=[{
             "role": "user",
             "content": f"""Is this question related to mushrooms, mushroom consumption, mushroom shopping, mushroom trends, or mushroom research? Answer only YES or NO.
-
+ 
 Question: {question}"""
         }]
     )
     answer = response.content[0].text.strip().upper()
     return "YES" in answer
-
+ 
 def find_relevant_pages(question, max_pages=6):
     """Find the most relevant pages for a question using text search first."""
     if not pdf_pages:
@@ -87,49 +87,51 @@ def find_relevant_pages(question, max_pages=6):
     if not top:
         top = pdf_pages[:max_pages]
     return top
-
+ 
 def build_system_prompt(source):
-    base = f"""You are Karen, a {PERSONA['age']}-year-old Canadian woman living in {PERSONA['city']}, Ontario. You are a Gen X female with a family, shop primarily at Loblaws, and have a household income of $100K-$150K. You love mushrooms and buy them regularly.
-
-You speak entirely in first person, from personal experience. You are warm, conversational, and genuine. You never sound like a researcher or analyst. Keep answers under 150 words unless asked for more detail.
-
-IMPORTANT: You only answer questions about mushrooms. If anyone asks about anything other than mushrooms, mushroom shopping, mushroom trends, or mushroom research, say warmly: 'Oh I wish I could help with that, but mushrooms are really my thing! Is there anything mushroom related I can help you with?'"""
-
+    base = f"""You are David Chen, a {PERSONA['age']}-year-old Consumer Insights Expert based in {PERSONA['city']}, Ontario with over 20 years of experience in the Canadian produce industry. You know the data inside and out but you speak in plain, conversational language, not like a stiff analyst. You are approachable, direct, and genuinely passionate about produce.
+ 
+You speak in first person, drawing on your professional expertise and years of working with Canadian grocery data and consumer research. You are warm and engaging without being casual. Think of yourself as the smartest person in the room who never makes others feel that way.
+ 
+Keep answers under 150 words unless asked for more detail.
+ 
+IMPORTANT: You only answer questions about mushrooms, mushroom consumers, mushroom trends, or mushroom research. If anyone asks about anything else say warmly: 'That is a great question but mushrooms are my specialty here. Is there anything about the mushroom category I can help you with?'"""
+ 
     if source == "web":
         return base + """
-
+ 
 You have just searched the internet for current information. When answering naturally say something like 'I just looked this up and from what I am seeing online...' Then share what you found in your warm personal voice."""
     else:
         return base + """
-
+ 
 You have been shown pages from a research report about Canadian mushroom consumers including charts, graphs, and written commentary. Read all the visual data and text carefully. When answering naturally say something like 'From the research I have seen on this...' and cite specific numbers and findings from the report pages you have been shown. If the pages shown do not contain the answer, say so honestly and share your personal experience instead."""
-
+ 
 @app.route("/")
 def index():
     return send_from_directory(".", "widget.html")
-
+ 
 @app.route("/api/persona", methods=["GET"])
 def get_persona():
     return jsonify(PERSONA)
-
+ 
 @app.route("/api/chat", methods=["POST"])
 def chat():
     data = request.json
     user_message = data.get("message", "")
     history = data.get("history", [])
-
+ 
     if not is_mushroom_related(user_message):
         return jsonify({
             "reply": "Oh I wish I could help with that, but mushrooms are really my thing! Is there anything mushroom related I can help you with?",
             "source": None,
             "persona": PERSONA
         })
-
+ 
     use_web = should_search_web(user_message)
     source = "web" if use_web else "report"
-
+ 
     messages = []
-
+ 
     if not use_web and pdf_pages:
         relevant_pages = find_relevant_pages(user_message, max_pages=6)
         pdf_context = []
@@ -157,16 +159,16 @@ def chat():
                 })
         pdf_context.append({
             "type": "text",
-            "text": f"\nNow please answer this question as Karen, using specific data from the report pages above: {user_message}"
+            "text": f"\nNow please answer this question as David, using specific data from the report pages above: {user_message}"
         })
         messages.append({"role": "user", "content": pdf_context})
         messages.append({"role": "assistant", "content": "I have carefully reviewed the research report pages including all charts and visual data. I will answer based on what I can see in them."})
-
+ 
     for msg in history[-4:]:
         messages.append(msg)
-
+ 
     messages.append({"role": "user", "content": user_message})
-
+ 
     try:
         if use_web:
             response = client.messages.create(
@@ -183,21 +185,21 @@ def chat():
                 system=build_system_prompt("report"),
                 messages=messages
             )
-
+ 
         reply = ""
         for block in response.content:
             if block.type == "text":
                 reply += block.text
-
+ 
         return jsonify({
             "reply": reply,
             "source": source,
             "persona": PERSONA
         })
-
+ 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
+ 
 @app.route("/api/upload-pdf", methods=["POST"])
 def upload_pdf():
     if "file" not in request.files:
@@ -210,16 +212,17 @@ def upload_pdf():
     pdf_pages = []
     load_pdf()
     return jsonify({"success": True, "pages": len(pdf_pages)})
-
+ 
 @app.route("/api/pdf-status", methods=["GET"])
 def pdf_status():
     return jsonify({
         "loaded": len(pdf_pages) > 0,
         "pages": len(pdf_pages)
     })
-
+ 
 load_pdf()
-
+ 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+ 
