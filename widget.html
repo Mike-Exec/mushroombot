@@ -7,6 +7,19 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Arial,sans-serif;background:#f5f5f0;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1rem}
+.screen{display:none}
+.screen.active{display:flex;align-items:center;justify-content:center;width:100%}
+#login.active{min-height:100vh;background:linear-gradient(135deg,#1b4332 0%,#2d6a4f 60%,#40916c 100%)}
+.lbox{background:#fff;border-radius:14px;padding:2.5rem 2rem;width:100%;max-width:360px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.18)}
+.lbrand{font-size:11px;letter-spacing:0.12em;color:#2d6a4f;text-transform:uppercase;font-weight:bold;margin-bottom:4px}
+.lbox h1{font-size:1.4rem;font-weight:normal;font-family:Georgia,serif;margin-bottom:4px}
+.lbox p{font-size:13px;color:#767676;margin-bottom:1.5rem}
+.lbox input{width:100%;padding:0.65rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:0.75rem;outline:none;font-family:Arial,sans-serif}
+.lbox input:focus{border-color:#40916c}
+.btn-g{width:100%;padding:0.75rem;background:#2d6a4f;color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer;font-weight:bold;transition:background 0.15s}
+.btn-g:hover{background:#40916c}
+.err{color:#c0392b;font-size:12px;margin-top:8px}
+#chat.active{align-items:flex-start;min-height:100vh}
 .chat-container{width:100%;max-width:680px;background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,0.10);display:flex;flex-direction:column;height:620px;border:1px solid #e0e0d8}
 .chat-header{background:#2d6a4f;color:#fff;padding:1rem 1.25rem;border-radius:16px 16px 0 0;display:flex;align-items:center;gap:12px;flex-shrink:0}
 .header-av{width:44px;height:44px;border-radius:50%;background:#40916c;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:bold;flex-shrink:0}
@@ -44,60 +57,95 @@ body{font-family:Arial,sans-serif;background:#f5f5f0;display:flex;align-items:ce
 .btn-send{padding:0.6rem 1.1rem;background:#2d6a4f;color:#fff;border:none;border-radius:10px;font-size:14px;cursor:pointer;font-weight:bold;height:40px;transition:background 0.15s;white-space:nowrap}
 .btn-send:hover{background:#40916c}
 .btn-send:disabled{background:#aaa;cursor:not-allowed}
-.footer-note{font-size:10px;color:#aaa;text-align:right}
+.footer-row{display:flex;align-items:center;justify-content:space-between}
 .thinking-note{font-size:11px;color:#aaa;font-style:italic}
+.footer-note{font-size:10px;color:#aaa;text-align:right}
 </style>
 </head>
 <body>
-<div class="chat-container">
-  <div class="chat-header">
-    <div class="header-av" id="hav">KA</div>
-    <div class="header-info">
-      <h2 id="hname"><span class="online-dot"></span>Karen</h2>
-      <p id="hdesc">Mushroom enthusiast &nbsp;·&nbsp; Mississauga, ON</p>
-    </div>
+
+<div id="login" class="screen active">
+  <div class="lbox">
+    <div class="lbrand">Execulytics Consulting</div>
+    <h1>Mushroom Insights</h1>
+    <p>Please sign in to continue</p>
+    <input type="text" id="lu" placeholder="Username" autocomplete="username" />
+    <input type="password" id="lp" placeholder="Password" autocomplete="current-password" />
+    <button class="btn-g" onclick="doLogin()">Sign In</button>
+    <div class="err" id="lerr"></div>
   </div>
-  <div class="messages" id="msgs">
-    <div class="empty-state">
-      <div>🍄</div>
-      <h3>Hi, I'm Karen!</h3>
-      <p>I'm a mushroom lover and regular Loblaws shopper in Mississauga.<br>Ask me anything about mushrooms and I'll do my best to help.</p>
-      <div class="suggestions">
-        <div class="suggestion" onclick="askSuggestion(this)">What do you think of mushroom prices lately?</div>
-        <div class="suggestion" onclick="askSuggestion(this)">What are the latest mushroom trends?</div>
-        <div class="suggestion" onclick="askSuggestion(this)">What does the research say about mushroom consumers?</div>
-        <div class="suggestion" onclick="askSuggestion(this)">Tell me your mushroom story</div>
+</div>
+
+<div id="chat" class="screen">
+  <div class="chat-container">
+    <div class="chat-header">
+      <div class="header-av" id="hav">DC</div>
+      <div class="header-info">
+        <h2 id="hname"><span class="online-dot"></span>David Chen</h2>
+        <p id="hdesc">Consumer Insights Expert &nbsp;·&nbsp; Toronto, ON</p>
       </div>
     </div>
-  </div>
-  <div class="input-area">
-    <div class="input-row">
-      <textarea id="qinput" placeholder="Ask Karen anything about mushrooms..." rows="1" onkeydown="handleKey(event)"></textarea>
-      <button class="btn-send" id="sbtn" onclick="sendMsg()">Send</button>
+    <div class="messages" id="msgs">
+      <div class="empty-state">
+        <div>🍄</div>
+        <h3>Hi, I'm David Chen!</h3>
+        <p>I'm a Consumer Insights Expert with over 20 years in the Canadian produce industry.<br>Ask me anything about the mushroom category and I will give you a straight answer backed by the data.</p>
+        <div class="suggestions">
+          <div class="suggestion" onclick="askSuggestion(this)">What do you think of mushroom prices lately?</div>
+          <div class="suggestion" onclick="askSuggestion(this)">What are the latest mushroom trends?</div>
+          <div class="suggestion" onclick="askSuggestion(this)">What does the research say about mushroom consumers?</div>
+          <div class="suggestion" onclick="askSuggestion(this)">Tell me your mushroom story</div>
+        </div>
+      </div>
     </div>
-    <div style="display:flex;align-items:center;justify-content:space-between">
-      <div class="thinking-note" id="thinking-note"></div>
-      <div class="footer-note">Powered by Execulytics</div>
+    <div class="input-area">
+      <div class="input-row">
+        <textarea id="qinput" placeholder="Ask David Chen anything about mushrooms..." rows="1" onkeydown="handleKey(event)"></textarea>
+        <button class="btn-send" id="sbtn" onclick="sendMsg()">Send</button>
+      </div>
+      <div class="footer-row">
+        <div class="thinking-note" id="thinking-note"></div>
+        <div class="footer-note">Powered by Execulytics</div>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
 const SERVER_URL = "https://mushroombot-oqw4.onrender.com";
+const VALID_USER = "Mushroom";
+const VALID_PASS = "QSR_Research";
 let history = [];
 let isThinking = false;
-let personaInitials = "KA";
-let personaName = "Karen";
+let personaInitials = "DC";
+let personaName = "David Chen";
+
+function doLogin(){
+  const u = document.getElementById('lu').value.trim();
+  const p = document.getElementById('lp').value;
+  if(u === VALID_USER && p === VALID_PASS){
+    document.getElementById('login').classList.remove('active');
+    document.getElementById('chat').classList.add('active');
+    document.getElementById('lerr').textContent = '';
+    loadPersona();
+  } else {
+    document.getElementById('lerr').textContent = 'Invalid username or password.';
+  }
+}
+
+document.addEventListener('keydown', e => {
+  if(e.key === 'Enter' && document.getElementById('login').classList.contains('active')) doLogin();
+});
 
 async function loadPersona(){
   try {
     const res = await fetch(SERVER_URL + "/api/persona");
     const p = await res.json();
-    personaInitials = p.initials || "KA";
-    personaName = p.name || "Karen";
+    personaInitials = p.initials || "DC";
+    personaName = p.name || "David Chen";
     document.getElementById('hav').textContent = personaInitials;
     document.getElementById('hname').innerHTML = '<span class="online-dot"></span>' + personaName;
-    document.getElementById('hdesc').textContent = 'Mushroom enthusiast \u00b7 ' + (p.city || 'Ontario');
+    document.getElementById('hdesc').textContent = 'Consumer Insights Expert \u00b7 ' + (p.city || 'Ontario');
   } catch(e){ console.log("Could not load persona", e); }
 }
 
@@ -164,7 +212,7 @@ async function sendMsg(){
   history.push({role:'user', content:q});
   isThinking = true;
   document.getElementById('sbtn').disabled = true;
-  document.getElementById('thinking-note').textContent = 'Karen is thinking...';
+  document.getElementById('thinking-note').textContent = 'David is thinking...';
   showTyping();
   try {
     const res = await fetch(SERVER_URL + "/api/chat", {
@@ -196,8 +244,6 @@ function handleKey(e){
   ta.style.height = 'auto';
   ta.style.height = Math.min(ta.scrollHeight, 100) + 'px';
 }
-
-loadPersona();
 </script>
 </body>
 </html>
