@@ -81,14 +81,14 @@ body{font-family:Arial,sans-serif;background:#f5f5f0;display:flex;align-items:ce
     <div class="chat-header">
       <div class="header-av" id="hav">DC</div>
       <div class="header-info">
-        <h2 id="hname"><span class="online-dot"></span>David Chen</h2>
+        <h2 id="hname"><span class="online-dot"></span>David</h2>
         <p id="hdesc">Consumer Insights Expert &nbsp;·&nbsp; Toronto, ON</p>
       </div>
     </div>
     <div class="messages" id="msgs">
       <div class="empty-state">
         <div>🍄</div>
-        <h3>Hi, I'm David Chen!</h3>
+        <h3>Hi, I'm David!</h3>
         <p>I'm a Consumer Insights Expert with over 20 years in the Canadian produce industry.<br>Ask me anything about the mushroom category and I will give you a straight answer backed by the data.</p>
         <div class="suggestions">
           <div class="suggestion" onclick="askSuggestion(this)">What do you think of mushroom prices lately?</div>
@@ -100,7 +100,7 @@ body{font-family:Arial,sans-serif;background:#f5f5f0;display:flex;align-items:ce
     </div>
     <div class="input-area">
       <div class="input-row">
-        <textarea id="qinput" placeholder="Ask David Chen anything about mushrooms..." rows="1" onkeydown="handleKey(event)"></textarea>
+        <textarea id="qinput" placeholder="Ask David anything about mushrooms..." rows="1" onkeydown="handleKey(event)"></textarea>
         <button class="btn-send" id="sbtn" onclick="sendMsg()">Send</button>
       </div>
       <div class="footer-row">
@@ -118,7 +118,7 @@ const VALID_PASS = "QSR_Research";
 let history = [];
 let isThinking = false;
 let personaInitials = "DC";
-let personaName = "David Chen";
+let personaName = "David";
 
 function doLogin(){
   const u = document.getElementById('lu').value.trim();
@@ -142,7 +142,7 @@ async function loadPersona(){
     const res = await fetch(SERVER_URL + "/api/persona");
     const p = await res.json();
     personaInitials = p.initials || "DC";
-    personaName = p.name || "David Chen";
+    personaName = p.name || "David";
     document.getElementById('hav').textContent = personaInitials;
     document.getElementById('hname').innerHTML = '<span class="online-dot"></span>' + personaName;
     document.getElementById('hdesc').textContent = 'Consumer Insights Expert \u00b7 ' + (p.city || 'Ontario');
