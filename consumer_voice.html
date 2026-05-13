@@ -9,13 +9,13 @@
 body{font-family:Arial,sans-serif;background:#f5f5f0;color:#1b1b1b;min-height:100vh}
 .screen{display:none}
 .screen.active{display:flex;flex-direction:column}
-#setup.active{align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#1b4332 0%,#2d6a4f 60%,#40916c 100%)}
-.sbox{background:#fff;border-radius:14px;padding:2.5rem 2rem;width:100%;max-width:380px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.18)}
+#login.active{align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#1b4332 0%,#2d6a4f 60%,#40916c 100%)}
+.lbox{background:#fff;border-radius:14px;padding:2.5rem 2rem;width:100%;max-width:360px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.18)}
 .brand{font-size:11px;letter-spacing:0.12em;color:#2d6a4f;text-transform:uppercase;font-weight:bold;margin-bottom:4px}
-.sbox h1{font-size:1.4rem;font-weight:normal;font-family:Georgia,serif;margin-bottom:4px}
-.sbox p{font-size:13px;color:#767676;margin-bottom:1.5rem;line-height:1.5}
-.sbox input{width:100%;padding:0.65rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:0.75rem;outline:none;font-family:Arial,sans-serif}
-.sbox input:focus{border-color:#40916c}
+.lbox h1{font-size:1.4rem;font-weight:normal;font-family:Georgia,serif;margin-bottom:4px}
+.lbox p{font-size:13px;color:#767676;margin-bottom:1.5rem}
+.lbox input{width:100%;padding:0.65rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:0.75rem;outline:none;font-family:Arial,sans-serif}
+.lbox input:focus{border-color:#40916c}
 .btn-g{width:100%;padding:0.75rem;background:#2d6a4f;color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer;font-weight:bold;transition:background 0.15s}
 .btn-g:hover{background:#40916c}
 .btn-g:disabled{background:#aaa;cursor:not-allowed}
@@ -64,15 +64,15 @@ select:focus{border-color:#40916c}
 </head>
 <body>
 
-<div id="setup" class="screen active">
-  <div class="sbox">
+<div id="login" class="screen active">
+  <div class="lbox">
     <div class="brand">Execulytics Consulting</div>
     <h1>Consumer Voice</h1>
-    <p>Mushroom consumer insights platform.<br>Enter your API key to get started.</p>
-    <input type="password" id="apikey" placeholder="sk-ant-api03-..." />
-    <div style="font-size:11px;color:#aaa;text-align:left;margin-bottom:0.75rem">Get your key at console.anthropic.com</div>
-    <button class="btn-g" onclick="initApp()">Continue</button>
-    <div class="err" id="serr"></div>
+    <p>Mushroom consumer insights platform</p>
+    <input type="text" id="lu" placeholder="Username" autocomplete="username" />
+    <input type="password" id="lp" placeholder="Password" autocomplete="current-password" />
+    <button class="btn-g" onclick="doLogin()">Sign In</button>
+    <div class="err" id="lerr"></div>
   </div>
 </div>
 
@@ -184,7 +184,8 @@ select:focus{border-color:#40916c}
 </div>
 
 <script>
-let API_KEY = "";
+const VALID_USER = "Mushrooms";
+const VALID_PASS = "Consumer_Insight";
 let consumerData = null;
 let selectedQ = "q1";
 
@@ -212,34 +213,38 @@ function getPersonaName(gender, age) {
   return nameList[Math.floor(Math.random() * nameList.length)];
 }
 
-function getInitials(name) {
-  return name.slice(0,2).toUpperCase();
-}
-
-async function initApp() {
-  const key = document.getElementById('apikey').value.trim();
-  if(!key.startsWith('sk-ant-')) {
-    document.getElementById('serr').textContent = 'That does not look like a valid API key.';
-    return;
-  }
-  API_KEY = key;
-
-  // Load consumer data
-  try {
-    const res = await fetch('consumer_data.json');
-    consumerData = await res.json();
-    document.getElementById('setup').classList.remove('active');
+function doLogin() {
+  const u = document.getElementById('lu').value.trim();
+  const p = document.getElementById('lp').value;
+  if(u === VALID_USER && p === VALID_PASS) {
+    document.getElementById('login').classList.remove('active');
     document.getElementById('app').classList.add('active');
-    updateMatchCount();
-  } catch(err) {
-    document.getElementById('serr').textContent = 'Could not load consumer data. Make sure consumer_data.json is in the same folder.';
+    document.getElementById('lerr').textContent = '';
+    loadData();
+  } else {
+    document.getElementById('lerr').textContent = 'Invalid username or password.';
   }
 }
 
 function doLogout() {
   document.getElementById('app').classList.remove('active');
-  document.getElementById('setup').classList.add('active');
-  API_KEY = '';
+  document.getElementById('login').classList.add('active');
+  document.getElementById('lu').value = '';
+  document.getElementById('lp').value = '';
+}
+
+document.addEventListener('keydown', e => {
+  if(e.key === 'Enter' && document.getElementById('login').classList.contains('active')) doLogin();
+});
+
+async function loadData() {
+  try {
+    const res = await fetch('/consumer_data.json');
+    consumerData = await res.json();
+    updateMatchCount();
+  } catch(err) {
+    alert('Could not load consumer data. Please contact your administrator.');
+  }
 }
 
 function selectQ(el) {
@@ -258,6 +263,7 @@ function getFilters() {
 }
 
 function filterData(filters) {
+  if(!consumerData) return [];
   return consumerData.filter(r => {
     if(filters.gender && r.gender !== filters.gender) return false;
     if(filters.age && r.age !== filters.age) return false;
@@ -268,9 +274,9 @@ function filterData(filters) {
 }
 
 function updateMatchCount() {
-  if(!consumerData) return;
   const matches = filterData(getFilters());
   const el = document.getElementById('match-count');
+  if(!consumerData) return;
   if(matches.length === 0) {
     el.textContent = 'No respondents match this combination. Try broadening your filters.';
     el.style.color = '#c0392b';
@@ -297,13 +303,11 @@ async function generate() {
   document.getElementById('spin').style.display = 'block';
   document.getElementById('out-card').style.display = 'none';
 
-  // Pick a representative name based on gender and age
   const gender = filters.gender || 'Male';
   const age = filters.age || '35–49 years old';
   const personaName = getPersonaName(gender, age);
-  const initials = getInitials(personaName);
+  const initials = personaName.slice(0,2).toUpperCase();
 
-  // Build demographic description
   const parts = [];
   if(filters.gender) parts.push(filters.gender);
   if(filters.age) parts.push(filters.age);
@@ -311,7 +315,6 @@ async function generate() {
   if(filters.region) parts.push(filters.region);
   const demoDesc = parts.length > 0 ? parts.join(' · ') : 'All Canadian mushroom consumers';
 
-  // Sample up to 30 responses for the question
   const shuffled = [...matches].sort(() => Math.random() - 0.5);
   const sample = shuffled.slice(0, 30);
   const responses = sample.map(r => r[selectedQ]).filter(Boolean);
@@ -335,59 +338,32 @@ async function generate() {
     document.getElementById('spin-msg').textContent = spinMsgs[msgIdx];
   }, 2000);
 
-  const prompt = `You are ${personaName}, a Canadian mushroom consumer with the following profile: ${demoDesc}.
-
-You have been asked: "${QUESTIONS[selectedQ]}"
-
-Below are the actual verbatim responses from ${responses.length} real Canadian consumers who match this demographic profile. Your job is to synthesize these responses into a single first-person narrative of 200-250 words that authentically captures the collective voice and sentiment of this consumer group.
-
-RULES:
-- Speak entirely in first person as ${personaName}
-- Stay completely grounded in what the actual respondents said - do not add opinions or information not present in the responses
-- Capture the dominant themes and sentiments but also note any meaningful variation in views
-- Sound like a real person talking, warm and conversational, not like a research report
-- Do not use bullet points or headers - write flowing prose only
-- Do not mention percentages or counts
-- Do not say "many respondents said" or similar analytical language - speak as yourself
-
-CONSUMER RESPONSES:
-${responses.map((r,i) => `[${i+1}] ${r}`).join('\n\n')}
-
-Now write your 200-250 word first-person synthesis as ${personaName}:`;
-
   try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": API_KEY,
-        "anthropic-version": "2023-06-01",
-        "anthropic-dangerous-direct-browser-access": "true"
-      },
+    const res = await fetch('/api/consumer-voice', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: "claude-sonnet-4-5",
-        max_tokens: 600,
-        messages: [{ role: "user", content: prompt }]
+        persona_name: personaName,
+        demo_desc: demoDesc,
+        question: QUESTIONS[selectedQ],
+        question_key: selectedQ,
+        responses: responses
       })
     });
 
     const data = await res.json();
-    let text = '';
-    if(data.content) data.content.forEach(b => { if(b.type==='text') text += b.text; });
-    if(!text && data.error) throw new Error(data.error.message);
-
     clearInterval(spinInterval);
 
-    // Display output
+    if(data.error) throw new Error(data.error);
+
     document.getElementById('out-av').textContent = initials;
     document.getElementById('out-name').textContent = `${personaName} — ${demoDesc}`;
     document.getElementById('out-desc').textContent = `Synthesized from ${matches.length} matching consumer response${matches.length !== 1 ? 's' : ''}`;
     document.getElementById('out-q-label').textContent = QUESTIONS[selectedQ];
     document.getElementById('out-count').textContent = `${responses.length} responses sampled`;
 
-    const paragraphs = text.split('\n').filter(p => p.trim());
+    const paragraphs = data.reply.split('\n').filter(p => p.trim());
     document.getElementById('out-text').innerHTML = paragraphs.map(p => `<p>${p}</p>`).join('');
-
     document.getElementById('out-card').style.display = 'block';
     document.getElementById('out-card').scrollIntoView({ behavior: 'smooth' });
 
