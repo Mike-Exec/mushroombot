@@ -15,7 +15,7 @@ PDF_PATH = "report.pdf"
 pdf_pages = []
  
 PERSONA = {
-    "name": "David Chen",
+    "name": "David",
     "age": 48,
     "city": "Toronto",
     "description": "Consumer Insights Expert, Canadian Produce Industry",
