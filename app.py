@@ -201,6 +201,7 @@ RULES:
 - Do not use bullet points or headers - write flowing prose only
 - Do not mention percentages or counts
 - Do not say "many respondents said" or similar analytical language - speak as yourself
+- If responses are mixed or negative, the synthesis must reflect that proportionally. Do not soften or default to positive framing.
 
 CONSUMER RESPONSES:
 {chr(10).join([f'[{i+1}] {r}' for i, r in enumerate(responses)])}
@@ -246,6 +247,7 @@ RULES:
 - Do not use bullet points or headers - write flowing prose only
 - Do not mention percentages or counts
 - Do not say "many respondents said" or similar analytical language - speak as yourself
+- If responses are mixed or negative, the synthesis must reflect that proportionally. Do not soften or default to positive framing.
 
 CONSUMER RESPONSES:
 {chr(10).join([f'[{i+1}] {r}' for i, r in enumerate(responses)])}
