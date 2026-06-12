@@ -495,7 +495,7 @@ async function generate() {
   const demoDesc = parts.length > 0 ? parts.join(' · ') : 'All Canadian pear consumers';
 
   const shuffled = [...matches].sort(() => Math.random() - 0.5);
-  const sample = shuffled.slice(0, 30);
+  const sample = shuffled.slice(0, 150);
   const responses = sample.map(r => r[selectedQ]).filter(Boolean);
 
   if(responses.length === 0) {
