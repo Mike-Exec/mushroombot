@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Pear Experience | Execulytics</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Arial,sans-serif;background:#f5f5f0;color:#1b1b1b;min-height:100vh}
@@ -37,6 +38,34 @@ select[multiple] option{padding:0.35rem 0.6rem;border-radius:4px}
 select[multiple] option:checked{background:#7d3c64;color:#fff}
 .clear-btn{margin-top:4px;padding:3px 10px;font-size:11px;border:1px solid #ddd;border-radius:6px;background:#fafaf7;color:#888;cursor:pointer;align-self:flex-start;font-family:Arial,sans-serif;transition:all 0.15s}
 .clear-btn:hover{border-color:#a8527a;color:#7d3c64}
+
+#empty-state{text-align:center;padding:2.5rem 1.5rem}
+.empty-illustration{margin-bottom:1.25rem}
+.empty-text{font-size:14px;color:#888;font-family:Georgia,serif;font-style:italic;max-width:420px;margin:0 auto;line-height:1.6}
+
+.sample-warning{font-size:11px;color:#b35900;background:#fff3e0;border:1px solid #ffd9a8;border-radius:6px;padding:4px 10px;margin-top:6px;display:inline-block;font-family:Arial,sans-serif;font-weight:bold}
+
+.sentiment-bar{margin-bottom:1.25rem}
+.sentiment-label{font-size:11px;font-weight:bold;color:#4a4a4a;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;font-family:Arial,sans-serif}
+.sentiment-track{display:flex;height:22px;border-radius:6px;overflow:hidden;border:1px solid #e8e0e4}
+.sentiment-seg{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;color:#fff;font-family:Arial,sans-serif;transition:width 0.3s}
+.sentiment-positive{background:#5a9367}
+.sentiment-mixed{background:#d9a441}
+.sentiment-negative{background:#c0556e}
+.sentiment-legend{display:flex;gap:1rem;margin-top:6px;font-size:11px;color:#888;font-family:Arial,sans-serif}
+.sentiment-legend span{display:inline-flex;align-items:center;gap:4px}
+.sentiment-dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+
+#history-card .card-title{position:relative}
+.history-item{padding:0.75rem 0;border-bottom:1px solid #f3e6ee;font-family:Arial,sans-serif}
+.history-item:last-child{border-bottom:none}
+.history-item .h-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.history-item .h-name{font-weight:bold;color:#7d3c64;font-size:13px}
+.history-item .h-time{font-size:10px;color:#bbb}
+.history-item .h-q{font-size:12px;color:#888;font-style:italic;margin-bottom:4px}
+.history-item .h-text{font-size:13px;color:#555;line-height:1.6;max-height:0;overflow:hidden;transition:max-height 0.3s}
+.history-item.expanded .h-text{max-height:1000px}
+.history-item .h-toggle{font-size:11px;color:#a8527a;cursor:pointer;font-weight:bold}
 select{padding:0.55rem 0.8rem;border:1px solid #ddd;border-radius:7px;font-size:14px;color:#1b1b1b;background:#fff;width:100%;outline:none;font-family:Arial,sans-serif}
 select:focus{border-color:#a8527a}
 .q-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-top:0.25rem}
@@ -165,11 +194,36 @@ select:focus{border-color:#a8527a}
       <p id="spin-msg">Finding matching consumers and synthesizing their voices...</p>
     </div>
 
+    <div class="card" id="empty-state">
+      <div class="empty-illustration">
+        <svg viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg" width="100%" height="auto" style="max-width:280px;display:block;margin:0 auto">
+          <ellipse cx="120" cy="185" rx="90" ry="10" fill="#f3e6ee"/>
+          <ellipse cx="95" cy="125" rx="38" ry="46" fill="#a8527a"/>
+          <path d="M95 79 Q92 60 105 50" stroke="#6b3a2f" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <ellipse cx="113" cy="58" rx="14" ry="9" fill="#7d9b5e" transform="rotate(-25 113 58)"/>
+          <circle cx="80" cy="120" r="7" fill="#fdf6fa" opacity="0.5"/>
+          <g transform="translate(150,95)">
+            <circle cx="35" cy="40" r="34" fill="#f0c8a0"/>
+            <path d="M5 40 Q2 20 35 8 Q68 20 65 40 Q68 60 35 72 Q2 60 5 40 Z" fill="#fdf6fa" opacity="0"/>
+            <circle cx="35" cy="40" r="34" fill="none" stroke="#e3a878" stroke-width="2" stroke-dasharray="2 4" opacity="0.6"/>
+            <path d="M15 30 Q35 15 55 30" stroke="#c98a5e" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <circle cx="25" cy="45" r="3" fill="#c98a5e"/>
+            <circle cx="45" cy="48" r="3" fill="#c98a5e"/>
+            <circle cx="35" cy="58" r="3" fill="#c98a5e"/>
+          </g>
+          <path d="M70 100 Q60 90 50 95" stroke="#7d3c64" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.4"/>
+          <path d="M165 60 Q175 50 185 55" stroke="#7d3c64" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.3"/>
+        </svg>
+      </div>
+      <p class="empty-text">Select a consumer profile and a question above, then generate to hear directly from that segment of Canadian pear shoppers.</p>
+    </div>
+
     <div class="card" id="out-card">
       <div class="meta-bar">
         <div>
           <div class="q-label" id="out-q-label"></div>
           <div class="count-badge" id="out-count"></div>
+          <div class="sample-warning" id="sample-warning"></div>
         </div>
         <button class="btn-copy" onclick="copyOutput()">Copy text</button>
       </div>
@@ -180,7 +234,16 @@ select:focus{border-color:#a8527a}
           <p id="out-desc"></p>
         </div>
       </div>
+      <div class="sentiment-bar" id="sentiment-bar"></div>
       <div class="response-text" id="out-text"></div>
+    </div>
+
+    <div class="card" id="history-card" style="display:none">
+      <div class="card-title">
+        Question History
+        <button class="btn-copy" style="float:right;margin-top:-4px" onclick="downloadHistoryPDF()">Download PDF</button>
+      </div>
+      <div id="history-list"></div>
     </div>
 
     <div class="footer">Execulytics Consulting &nbsp;|&nbsp; The Pear Experience &nbsp;|&nbsp; Based on 151 Canadian pear consumer interviews</div>
@@ -192,6 +255,7 @@ const VALID_USER = "Argentine_Pears";
 const VALID_PASS = "Cali_Pears2026";
 let consumerData = null;
 let selectedQ = "q1";
+let questionHistory = [];
 
 const QUESTIONS = {
   q1: "Did you enjoy your pear eating experience?",
@@ -209,6 +273,55 @@ const NAMES = {
   "Male_46-60 years old": ["Robert","William","Richard","Thomas","Charles","Stephen","Mark","Paul","George","Donald"],
   "Male_61-79 years old": ["Harold","Walter","Frank","Raymond","Lawrence","Gerald","Arthur","Eugene","Howard","Ernest"]
 };
+
+
+const POSITIVE_WORDS = ['enjoy','enjoyed','love','loved','great','good','delicious','fresh','sweet','juicy','satisfied','happy','perfect','excellent','tasty','wonderful','amazing','nice','pleased','favorite','favourite','best','crisp','ripe','flavorful','flavourful'];
+const NEGATIVE_WORDS = ['disappointed','bad','poor','not good','dislike','hate','terrible','awful','bland','mushy','mealy','sour','bitter','hard','unripe','overripe','rotten','bruised','disappointing','unsatisfied','never','worst','dry','tasteless','spoiled','spoilt'];
+
+function analyzeSentiment(responses) {
+  let pos = 0, neg = 0, mixed = 0;
+  responses.forEach(r => {
+    const text = String(r).toLowerCase();
+    const hasPos = POSITIVE_WORDS.some(w => text.includes(w));
+    const hasNeg = NEGATIVE_WORDS.some(w => text.includes(w));
+    if(hasPos && hasNeg) mixed++;
+    else if(hasPos) pos++;
+    else if(hasNeg) neg++;
+    else mixed++;
+  });
+  const total = responses.length;
+  return {
+    positive: Math.round((pos/total)*100),
+    mixed: Math.round((mixed/total)*100),
+    negative: Math.round((neg/total)*100),
+    counts: {pos, mixed, neg, total}
+  };
+}
+
+function renderSentimentBar(sentiment) {
+  // Adjust rounding so total is 100
+  let {positive, mixed, negative} = sentiment;
+  const sum = positive + mixed + negative;
+  if(sum !== 100 && sum > 0) {
+    const diff = 100 - sum;
+    if(positive >= mixed && positive >= negative) positive += diff;
+    else if(mixed >= negative) mixed += diff;
+    else negative += diff;
+  }
+  const segs = [];
+  if(positive > 0) segs.push(`<div class="sentiment-seg sentiment-positive" style="width:${positive}%">${positive}%</div>`);
+  if(mixed > 0) segs.push(`<div class="sentiment-seg sentiment-mixed" style="width:${mixed}%">${mixed}%</div>`);
+  if(negative > 0) segs.push(`<div class="sentiment-seg sentiment-negative" style="width:${negative}%">${negative}%</div>`);
+
+  return `
+    <div class="sentiment-label">Sentiment breakdown of sampled responses</div>
+    <div class="sentiment-track">${segs.join('')}</div>
+    <div class="sentiment-legend">
+      <span><span class="sentiment-dot" style="background:#5a9367"></span>Positive</span>
+      <span><span class="sentiment-dot" style="background:#d9a441"></span>Mixed / Neutral</span>
+      <span><span class="sentiment-dot" style="background:#c0556e"></span>Negative</span>
+    </div>`;
+}
 
 function getPersonaName(gender, age) {
   const key = `${gender}_${age}`;
@@ -316,6 +429,7 @@ async function generate() {
   document.getElementById('gbtn').disabled = true;
   document.getElementById('spin').style.display = 'block';
   document.getElementById('out-card').style.display = 'none';
+  document.getElementById('empty-state').style.display = 'none';
 
   const gender = filters.gender.length > 0 ? filters.gender[Math.floor(Math.random()*filters.gender.length)] : 'Male';
   const age = filters.age.length > 0 ? filters.age[Math.floor(Math.random()*filters.age.length)] : '31-45 years old';
@@ -391,6 +505,18 @@ async function generate() {
     return;
   }
 
+  const sentiment = analyzeSentiment(responses);
+
+  // Sample size warning
+  const warningEl = document.getElementById('sample-warning');
+  if(responses.length < 5) {
+    warningEl.textContent = `Small sample size (${responses.length} response${responses.length !== 1 ? 's' : ''}) — results may not be representative`;
+    warningEl.style.display = 'inline-block';
+  } else {
+    warningEl.textContent = '';
+    warningEl.style.display = 'none';
+  }
+
   const spinMsgs = [
     'Reading consumer responses...',
     'Finding the common threads...',
@@ -425,11 +551,25 @@ async function generate() {
     document.getElementById('out-desc').textContent = `Synthesized from ${matches.length} matching consumer response${matches.length !== 1 ? 's' : ''}`;
     document.getElementById('out-q-label').textContent = QUESTIONS[selectedQ];
     document.getElementById('out-count').textContent = `${responses.length} responses sampled`;
+    document.getElementById('sentiment-bar').innerHTML = renderSentimentBar(sentiment);
 
     const paragraphs = data.reply.split('\n').filter(p => p.trim());
     document.getElementById('out-text').innerHTML = paragraphs.map(p => `<p>${p}</p>`).join('');
     document.getElementById('out-card').style.display = 'block';
     document.getElementById('out-card').scrollIntoView({ behavior: 'smooth' });
+
+    // Save to history
+    questionHistory.unshift({
+      name: personaName,
+      desc: demoDesc,
+      question: QUESTIONS[selectedQ],
+      text: data.reply,
+      sentiment: sentiment,
+      sampleCount: responses.length,
+      matchCount: matches.length,
+      time: new Date().toLocaleTimeString('en-CA', {hour:'2-digit',minute:'2-digit'})
+    });
+    renderHistory();
 
   } catch(err) {
     clearInterval(spinInterval);
@@ -438,6 +578,99 @@ async function generate() {
 
   document.getElementById('spin').style.display = 'none';
   document.getElementById('gbtn').disabled = false;
+}
+
+function renderHistory() {
+  const card = document.getElementById('history-card');
+  const list = document.getElementById('history-list');
+  if(questionHistory.length === 0) {
+    card.style.display = 'none';
+    return;
+  }
+  card.style.display = 'block';
+  list.innerHTML = questionHistory.map((h, i) => `
+    <div class="history-item" id="hist-${i}">
+      <div class="h-top">
+        <span class="h-name">${h.name} — ${h.desc}</span>
+        <span class="h-time">${h.time}</span>
+      </div>
+      <div class="h-q">${h.question} (${h.sampleCount} of ${h.matchCount} responses sampled, ${h.sentiment.positive}% positive / ${h.sentiment.mixed}% mixed / ${h.sentiment.negative}% negative)</div>
+      <div class="h-text">${h.text.split('\n').filter(p=>p.trim()).map(p=>`<p style="margin-bottom:0.6rem">${p}</p>`).join('')}</div>
+      <div class="h-toggle" onclick="toggleHistoryItem(${i})">Show response</div>
+    </div>
+  `).join('');
+}
+
+function toggleHistoryItem(i) {
+  const item = document.getElementById(`hist-${i}`);
+  const toggle = item.querySelector('.h-toggle');
+  item.classList.toggle('expanded');
+  toggle.textContent = item.classList.contains('expanded') ? 'Hide response' : 'Show response';
+}
+
+function downloadHistoryPDF() {
+  if(questionHistory.length === 0) {
+    alert('No history to download yet.');
+    return;
+  }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const margin = 50;
+  const maxWidth = pageWidth - margin * 2;
+  let y = 60;
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(16);
+  doc.setTextColor(125, 60, 100);
+  doc.text('The Pear Experience — Question History', margin, y);
+  y += 18;
+  doc.setFontSize(9);
+  doc.setTextColor(150, 150, 150);
+  doc.text(`Generated ${new Date().toLocaleString('en-CA')}`, margin, y);
+  y += 30;
+
+  questionHistory.slice().reverse().forEach((h, idx) => {
+    if(y > 700) { doc.addPage(); y = 60; }
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    doc.setTextColor(125, 60, 100);
+    doc.text(`${h.name} — ${h.desc}`, margin, y);
+    y += 16;
+
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    const qLines = doc.splitTextToSize(h.question, maxWidth);
+    doc.text(qLines, margin, y);
+    y += qLines.length * 13 + 4;
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(150, 100, 60);
+    doc.text(`${h.sampleCount} of ${h.matchCount} responses sampled  |  Sentiment: ${h.sentiment.positive}% positive, ${h.sentiment.mixed}% mixed, ${h.sentiment.negative}% negative  |  ${h.time}`, margin, y);
+    y += 18;
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor(30, 30, 30);
+    const bodyLines = doc.splitTextToSize(h.text, maxWidth);
+    bodyLines.forEach(line => {
+      if(y > 740) { doc.addPage(); y = 60; }
+      doc.text(line, margin, y);
+      y += 13;
+    });
+
+    y += 16;
+    if(idx < questionHistory.length - 1) {
+      doc.setDrawColor(230, 220, 225);
+      doc.line(margin, y - 8, pageWidth - margin, y - 8);
+      y += 8;
+    }
+  });
+
+  doc.save('pear-experience-history.pdf');
 }
 
 function copyOutput() {
