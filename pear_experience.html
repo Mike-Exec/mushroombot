@@ -311,10 +311,60 @@ async function generate() {
   const initials = personaName.slice(0,2).toUpperCase();
 
   const regionLabel = r => r === 'Quebec' ? 'Québec' : (r === 'Atlantic' ? 'Atlantic Canada' : r);
+
+  // Age order and range collapsing
+  const AGE_ORDER = ['20-30 years old','31-45 years old','46-60 years old','61-79 years old'];
+  const AGE_BOUNDS = {
+    '20-30 years old': [20,30],
+    '31-45 years old': [31,45],
+    '46-60 years old': [46,60],
+    '61-79 years old': [61,79]
+  };
+  function describeAges(ages) {
+    if(ages.length === 0) return null;
+    if(ages.length === 1) return ages[0];
+    const sorted = [...ages].sort((a,b) => AGE_ORDER.indexOf(a) - AGE_ORDER.indexOf(b));
+    const indices = sorted.map(a => AGE_ORDER.indexOf(a));
+    const isConsecutive = indices.every((v,i) => i === 0 || v === indices[i-1] + 1);
+    if(isConsecutive) {
+      const min = AGE_BOUNDS[sorted[0]][0];
+      const max = AGE_BOUNDS[sorted[sorted.length-1]][1];
+      return `${min}-${max} years old`;
+    }
+    return sorted.join(' or ');
+  }
+
+  // Income order and range collapsing
+  const INCOME_ORDER = ['Less than $50K','$50K - $99K','$100K - $149K','More than $150K'];
+  const INCOME_LABELS = {
+    'Less than $50K': {low: 'Less than $50K', high: '$50K'},
+    '$50K - $99K': {low: '$50K', high: '$99K'},
+    '$100K - $149K': {low: '$100K', high: '$149K'},
+    'More than $150K': {low: '$150K', high: 'More than $150K'}
+  };
+  function describeIncomes(incomes) {
+    if(incomes.length === 0) return null;
+    if(incomes.length === 1) return incomes[0];
+    const sorted = [...incomes].sort((a,b) => INCOME_ORDER.indexOf(a) - INCOME_ORDER.indexOf(b));
+    const indices = sorted.map(i => INCOME_ORDER.indexOf(i));
+    const isConsecutive = indices.every((v,i) => i === 0 || v === indices[i-1] + 1);
+    if(isConsecutive) {
+      const first = sorted[0];
+      const last = sorted[sorted.length-1];
+      if(first === 'Less than $50K' && last === 'More than $150K') return 'All income levels';
+      if(first === 'Less than $50K') return `Less than ${INCOME_LABELS[last].high}`;
+      if(last === 'More than $150K') return `${INCOME_LABELS[first].low}+`;
+      return `${INCOME_LABELS[first].low} to ${INCOME_LABELS[last].high}`;
+    }
+    return sorted.join(' or ');
+  }
+
   const parts = [];
   if(filters.gender.length > 0) parts.push(filters.gender.join(' or '));
-  if(filters.age.length > 0) parts.push(filters.age.join(' or '));
-  if(filters.income.length > 0) parts.push(filters.income.join(' or '));
+  const ageDesc = describeAges(filters.age);
+  if(ageDesc) parts.push(ageDesc);
+  const incomeDesc = describeIncomes(filters.income);
+  if(incomeDesc) parts.push(incomeDesc);
   if(filters.region.length > 0) parts.push(filters.region.map(regionLabel).join(' or '));
   const demoDesc = parts.length > 0 ? parts.join(' · ') : 'All Canadian pear consumers';
 
