@@ -35,6 +35,8 @@ body{font-family:Arial,sans-serif;background:#f5f5f0;color:#1b1b1b;min-height:10
 select[multiple]{padding:0.3rem}
 select[multiple] option{padding:0.35rem 0.6rem;border-radius:4px}
 select[multiple] option:checked{background:#7d3c64;color:#fff}
+.clear-btn{margin-top:4px;padding:3px 10px;font-size:11px;border:1px solid #ddd;border-radius:6px;background:#fafaf7;color:#888;cursor:pointer;align-self:flex-start;font-family:Arial,sans-serif;transition:all 0.15s}
+.clear-btn:hover{border-color:#a8527a;color:#7d3c64}
 select{padding:0.55rem 0.8rem;border:1px solid #ddd;border-radius:7px;font-size:14px;color:#1b1b1b;background:#fff;width:100%;outline:none;font-family:Arial,sans-serif}
 select:focus{border-color:#a8527a}
 .q-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-top:0.25rem}
@@ -99,6 +101,7 @@ select:focus{border-color:#a8527a}
             <option value="Female">Female</option>
             <option value="Male">Male</option>
           </select>
+          <button type="button" class="clear-btn" onclick="clearFilter('f-gender')">Clear</button>
         </div>
         <div class="fg">
           <label>Age Group <span class="hint">(select one or more, none = all)</span></label>
@@ -108,6 +111,7 @@ select:focus{border-color:#a8527a}
             <option value="46-60 years old">46-60 years old</option>
             <option value="61-79 years old">61-79 years old</option>
           </select>
+          <button type="button" class="clear-btn" onclick="clearFilter('f-age')">Clear</button>
         </div>
         <div class="fg">
           <label>Household Income <span class="hint">(select one or more, none = all)</span></label>
@@ -117,6 +121,7 @@ select:focus{border-color:#a8527a}
             <option value="$100K - $149K">$100K - $149K</option>
             <option value="More than $150K">More than $150K</option>
           </select>
+          <button type="button" class="clear-btn" onclick="clearFilter('f-income')">Clear</button>
         </div>
         <div class="fg">
           <label>Region <span class="hint">(select one or more, none = all)</span></label>
@@ -126,6 +131,7 @@ select:focus{border-color:#a8527a}
             <option value="Quebec">Quebec</option>
             <option value="Atlantic">Atlantic Canada</option>
           </select>
+          <button type="button" class="clear-btn" onclick="clearFilter('f-region')">Clear</button>
         </div>
       </div>
       <div style="font-size:11px;color:#999;font-family:Arial,sans-serif;margin-top:0.5rem">Tip: hold Ctrl (Windows) or Cmd (Mac) to select multiple options, or click and drag.</div>
@@ -248,6 +254,12 @@ function selectQ(el) {
   document.querySelectorAll('.q-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
   selectedQ = el.dataset.q;
+}
+
+function clearFilter(id) {
+  const el = document.getElementById(id);
+  Array.from(el.options).forEach(o => o.selected = false);
+  updateMatchCount();
 }
 
 function getSelectedValues(id) {
