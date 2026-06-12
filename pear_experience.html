@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Pear Experience | Execulytics</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f5f5f0;color:#1b1b1b;min-height:100vh}
+.screen{display:none}
+.screen.active{display:flex;flex-direction:column}
+#login.active{align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#4a2545 0%,#7d3c64 60%,#a8527a 100%)}
+.lbox{background:#fff;border-radius:14px;padding:2.5rem 2rem;width:100%;max-width:360px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.18)}
+.brand{font-size:11px;letter-spacing:0.12em;color:#7d3c64;text-transform:uppercase;font-weight:bold;margin-bottom:4px}
+.lbox h1{font-size:1.4rem;font-weight:normal;font-family:Georgia,serif;margin-bottom:4px}
+.lbox p{font-size:13px;color:#767676;margin-bottom:1.5rem}
+.lbox input{width:100%;padding:0.65rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:0.75rem;outline:none;font-family:Arial,sans-serif}
+.lbox input:focus{border-color:#a8527a}
+.btn-g{width:100%;padding:0.75rem;background:#7d3c64;color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer;font-weight:bold;transition:background 0.15s}
+.btn-g:hover{background:#a8527a}
+.btn-g:disabled{background:#aaa;cursor:not-allowed}
+.err{color:#c0392b;font-size:12px;margin-top:6px}
+#app.active{min-height:100vh}
+.topbar{background:#7d3c64;color:#fff;padding:0.85rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.topbar .tb{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;opacity:0.75;margin-bottom:2px}
+.topbar h2{font-size:1.1rem;font-weight:normal;font-family:Georgia,serif}
+.btn-sm{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:0.35rem 0.9rem;border-radius:6px;cursor:pointer;font-size:12px}
+.app-body{max-width:900px;margin:0 auto;padding:1.5rem}
+.card{background:#fff;border:1px solid #e8e0e4;border-radius:10px;padding:1.25rem;margin-bottom:1.25rem;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
+.card-title{font-size:11px;font-weight:bold;color:#7d3c64;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid #f3e6ee}
+.filter-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fg label{font-size:11px;font-weight:bold;color:#4a4a4a;text-transform:uppercase;letter-spacing:0.05em}
+select{padding:0.55rem 0.8rem;border:1px solid #ddd;border-radius:7px;font-size:14px;color:#1b1b1b;background:#fff;width:100%;outline:none;font-family:Arial,sans-serif}
+select:focus{border-color:#a8527a}
+.q-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-top:0.25rem}
+.q-btn{padding:0.65rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:13px;cursor:pointer;background:#fafaf7;color:#4a4a4a;text-align:left;line-height:1.4;transition:all 0.15s}
+.q-btn:hover{border-color:#a8527a;color:#7d3c64;background:#fdf6fa}
+.q-btn.active{background:#7d3c64;color:#fff;border-color:#7d3c64}
+.q-num{font-size:10px;font-weight:bold;opacity:0.7;display:block;margin-bottom:3px}
+.gen-bar{text-align:center;margin:1.25rem 0}
+.btn-gen{padding:0.85rem 2.5rem;background:#7d3c64;color:#fff;border:none;border-radius:10px;font-size:15px;cursor:pointer;font-family:Georgia,serif;font-style:italic;transition:all 0.2s;box-shadow:0 4px 16px rgba(125,60,100,0.2)}
+.btn-gen:hover{background:#a8527a;transform:translateY(-1px)}
+.btn-gen:disabled{background:#aaa;cursor:not-allowed;transform:none;box-shadow:none}
+.spinner-wrap{text-align:center;padding:2.5rem;display:none}
+.spinner{width:36px;height:36px;border:3px solid #f3e6ee;border-top-color:#7d3c64;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 0.8rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner-wrap p{font-size:13px;color:#767676;font-style:italic}
+#out-card{display:none}
+.persona-row{display:flex;align-items:center;gap:14px;background:#f3e6ee;border-radius:8px;padding:0.9rem 1.1rem;margin-bottom:1.2rem;border:1px solid #e3c9d8}
+.av{width:48px;height:48px;border-radius:50%;background:#7d3c64;color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:bold;flex-shrink:0}
+.persona-info h3{font-size:1rem;color:#7d3c64;margin-bottom:2px;font-family:Georgia,serif}
+.persona-info p{font-size:12px;color:#4a4a4a;line-height:1.5}
+.q-label{display:inline-block;background:#7d3c64;color:#fff;font-size:11px;padding:3px 10px;border-radius:20px;font-family:Arial,sans-serif;font-weight:bold;margin-bottom:1rem}
+.response-text{font-size:15px;line-height:1.85;color:#1b1b1b;font-family:Georgia,serif}
+.response-text p{margin-bottom:1.1rem}
+.meta-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;flex-wrap:wrap;gap:0.5rem}
+.count-badge{font-size:12px;color:#767676;font-family:Arial,sans-serif;font-style:italic}
+.btn-copy{padding:0.4rem 0.9rem;background:#fafaf7;border:1px solid #ddd;border-radius:6px;font-size:12px;cursor:pointer;color:#4a4a4a;font-family:Arial,sans-serif}
+.btn-copy:hover{border-color:#7d3c64;color:#7d3c64}
+.footer{font-size:11px;color:#aaa;text-align:center;margin-top:1.5rem;padding-top:1rem;border-top:1px solid #eee}
+@media(max-width:700px){.filter-grid,.q-grid{grid-template-columns:1fr}.app-body{padding:1rem}}
+</style>
+</head>
+<body>
+
+<div id="login" class="screen active">
+  <div class="lbox">
+    <div class="brand">Execulytics Consulting</div>
+    <h1>The Pear Experience</h1>
+    <p>Consumer insights platform</p>
+    <input type="text" id="lu" placeholder="Username" autocomplete="username" />
+    <input type="password" id="lp" placeholder="Password" autocomplete="current-password" />
+    <button class="btn-g" onclick="doLogin()">Sign In</button>
+    <div class="err" id="lerr"></div>
+  </div>
+</div>
+
+<div id="app" class="screen">
+  <div class="topbar">
+    <div>
+      <div class="tb">Execulytics Consulting</div>
+      <h2>The Pear Experience</h2>
+    </div>
+    <button class="btn-sm" onclick="doLogout()">Sign Out</button>
+  </div>
+  <div class="app-body">
+
+    <div class="card">
+      <div class="card-title">Select Consumer Profile</div>
+      <div class="filter-grid">
+        <div class="fg">
+          <label>Gender</label>
+          <select id="f-gender">
+            <option value="">All genders</option>
+            <option value="Female">Female</option>
+            <option value="Male">Male</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Age Group</label>
+          <select id="f-age">
+            <option value="">All age groups</option>
+            <option value="20-30 years old">20-30 years old</option>
+            <option value="31-45 years old">31-45 years old</option>
+            <option value="46-60 years old">46-60 years old</option>
+            <option value="61-79 years old">61-79 years old</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Household Income</label>
+          <select id="f-income">
+            <option value="">All income levels</option>
+            <option value="Less than $50K">Less than $50K</option>
+            <option value="$50K - $99K">$50K - $99K</option>
+            <option value="$100K - $149K">$100K - $149K</option>
+            <option value="More than $150K">More than $150K</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Region</label>
+          <select id="f-region">
+            <option value="">All regions</option>
+            <option value="West">West</option>
+            <option value="Ontario">Ontario</option>
+            <option value="Quebec">Quebec</option>
+            <option value="Atlantic">Atlantic Canada</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:0.75rem;font-size:12px;color:#767676;font-family:Arial,sans-serif" id="match-count">Select filters to see matching respondents</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Select Question</div>
+      <div class="q-grid">
+        <div class="q-btn active" data-q="q1" onclick="selectQ(this)">
+          <span class="q-num">Question 1</span>
+          Did you enjoy your pear eating experience?
+        </div>
+        <div class="q-btn" data-q="q2" onclick="selectQ(this)">
+          <span class="q-num">Question 2</span>
+          Do you have a good idea of the ripeness you want?
+        </div>
+        <div class="q-btn" data-q="q3" onclick="selectQ(this)">
+          <span class="q-num">Question 3</span>
+          What was the taste and texture like?
+        </div>
+      </div>
+    </div>
+
+    <div class="gen-bar">
+      <button class="btn-gen" id="gbtn" onclick="generate()">Generate Consumer Voice</button>
+    </div>
+
+    <div class="spinner-wrap" id="spin">
+      <div class="spinner"></div>
+      <p id="spin-msg">Finding matching consumers and synthesizing their voices...</p>
+    </div>
+
+    <div class="card" id="out-card">
+      <div class="meta-bar">
+        <div>
+          <div class="q-label" id="out-q-label"></div>
+          <div class="count-badge" id="out-count"></div>
+        </div>
+        <button class="btn-copy" onclick="copyOutput()">Copy text</button>
+      </div>
+      <div class="persona-row">
+        <div class="av" id="out-av"></div>
+        <div class="persona-info">
+          <h3 id="out-name"></h3>
+          <p id="out-desc"></p>
+        </div>
+      </div>
+      <div class="response-text" id="out-text"></div>
+    </div>
+
+    <div class="footer">Execulytics Consulting &nbsp;|&nbsp; The Pear Experience &nbsp;|&nbsp; Based on 151 Canadian pear consumer interviews</div>
+  </div>
+</div>
+
+<script>
+const VALID_USER = "Mushrooms";
+const VALID_PASS = "Consumer_Insight";
+let consumerData = null;
+let selectedQ = "q1";
+
+const QUESTIONS = {
+  q1: "Did you enjoy your pear eating experience?",
+  q2: "Do you have a good idea of the ripeness you want?",
+  q3: "What was the taste and texture like?"
+};
+
+const NAMES = {
+  "Female_20-30 years old": ["Emma","Olivia","Sophie","Chloe","Isabelle","Mia","Zoe","Ava","Lily","Jade"],
+  "Female_31-45 years old": ["Sarah","Jennifer","Michelle","Amanda","Lisa","Karen","Christine","Nicole","Stephanie","Rachel"],
+  "Female_46-60 years old": ["Linda","Patricia","Barbara","Susan","Margaret","Catherine","Diane","Carol","Janet","Anne"],
+  "Female_61-79 years old": ["Dorothy","Betty","Helen","Ruth","Frances","Joan","Mary","Jean","Shirley","Gloria"],
+  "Male_20-30 years old": ["Liam","Noah","Ethan","Lucas","Benjamin","Oliver","Jack","Logan","Mason","Owen"],
+  "Male_31-45 years old": ["James","Michael","David","Daniel","Matthew","Andrew","Ryan","Jason","Kevin","Brian"],
+  "Male_46-60 years old": ["Robert","William","Richard","Thomas","Charles","Stephen","Mark","Paul","George","Donald"],
+  "Male_61-79 years old": ["Harold","Walter","Frank","Raymond","Lawrence","Gerald","Arthur","Eugene","Howard","Ernest"]
+};
+
+function getPersonaName(gender, age) {
+  const key = `${gender}_${age}`;
+  const nameList = NAMES[key] || NAMES["Male_31-45 years old"];
+  return nameList[Math.floor(Math.random() * nameList.length)];
+}
+
+function doLogin() {
+  const u = document.getElementById('lu').value.trim();
+  const p = document.getElementById('lp').value;
+  if(u === VALID_USER && p === VALID_PASS) {
+    document.getElementById('login').classList.remove('active');
+    document.getElementById('app').classList.add('active');
+    document.getElementById('lerr').textContent = '';
+    loadData();
+  } else {
+    document.getElementById('lerr').textContent = 'Invalid username or password.';
+  }
+}
+
+function doLogout() {
+  document.getElementById('app').classList.remove('active');
+  document.getElementById('login').classList.add('active');
+  document.getElementById('lu').value = '';
+  document.getElementById('lp').value = '';
+}
+
+document.addEventListener('keydown', e => {
+  if(e.key === 'Enter' && document.getElementById('login').classList.contains('active')) doLogin();
+});
+
+async function loadData() {
+  try {
+    const res = await fetch('/pear_data.json');
+    consumerData = await res.json();
+    updateMatchCount();
+  } catch(err) {
+    alert('Could not load consumer data. Please contact your administrator.');
+  }
+}
+
+function selectQ(el) {
+  document.querySelectorAll('.q-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  selectedQ = el.dataset.q;
+}
+
+function getFilters() {
+  return {
+    gender: document.getElementById('f-gender').value,
+    age: document.getElementById('f-age').value,
+    income: document.getElementById('f-income').value,
+    region: document.getElementById('f-region').value
+  };
+}
+
+function filterData(filters) {
+  if(!consumerData) return [];
+  return consumerData.filter(r => {
+    if(filters.gender && r.gender !== filters.gender) return false;
+    if(filters.age && r.age !== filters.age) return false;
+    if(filters.income && r.income !== filters.income) return false;
+    if(filters.region && r.region !== filters.region) return false;
+    return true;
+  });
+}
+
+function updateMatchCount() {
+  const matches = filterData(getFilters());
+  const el = document.getElementById('match-count');
+  if(!consumerData) return;
+  if(matches.length === 0) {
+    el.textContent = 'No respondents match this combination. Try broadening your filters.';
+    el.style.color = '#c0392b';
+  } else {
+    el.textContent = `${matches.length} respondent${matches.length !== 1 ? 's' : ''} match this profile`;
+    el.style.color = '#7d3c64';
+  }
+}
+
+document.querySelectorAll('#app select').forEach(s => {
+  s.addEventListener('change', updateMatchCount);
+});
+
+async function generate() {
+  const filters = getFilters();
+  const matches = filterData(filters);
+
+  if(matches.length === 0) {
+    alert('No respondents match this combination. Please broaden your filters.');
+    return;
+  }
+
+  document.getElementById('gbtn').disabled = true;
+  document.getElementById('spin').style.display = 'block';
+  document.getElementById('out-card').style.display = 'none';
+
+  const gender = filters.gender || 'Male';
+  const age = filters.age || '31-45 years old';
+  const personaName = getPersonaName(gender, age);
+  const initials = personaName.slice(0,2).toUpperCase();
+
+  const parts = [];
+  if(filters.gender) parts.push(filters.gender);
+  if(filters.age) parts.push(filters.age);
+  if(filters.income) parts.push(filters.income);
+  if(filters.region) parts.push(filters.region === 'Quebec' ? 'Québec' : (filters.region === 'Atlantic' ? 'Atlantic Canada' : filters.region));
+  const demoDesc = parts.length > 0 ? parts.join(' · ') : 'All Canadian pear consumers';
+
+  const shuffled = [...matches].sort(() => Math.random() - 0.5);
+  const sample = shuffled.slice(0, 30);
+  const responses = sample.map(r => r[selectedQ]).filter(Boolean);
+
+  if(responses.length === 0) {
+    alert('No responses found for this question and filter combination.');
+    document.getElementById('gbtn').disabled = false;
+    document.getElementById('spin').style.display = 'none';
+    return;
+  }
+
+  const spinMsgs = [
+    'Reading consumer responses...',
+    'Finding the common threads...',
+    'Synthesizing the consumer voice...',
+    'Almost ready...'
+  ];
+  let msgIdx = 0;
+  const spinInterval = setInterval(() => {
+    msgIdx = (msgIdx + 1) % spinMsgs.length;
+    document.getElementById('spin-msg').textContent = spinMsgs[msgIdx];
+  }, 2000);
+
+  try {
+    const res = await fetch('/api/pear-voice', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        persona_name: personaName,
+        demo_desc: demoDesc,
+        question: QUESTIONS[selectedQ],
+        responses: responses
+      })
+    });
+
+    const data = await res.json();
+    clearInterval(spinInterval);
+
+    if(data.error) throw new Error(data.error);
+
+    document.getElementById('out-av').textContent = initials;
+    document.getElementById('out-name').textContent = `${personaName} — ${demoDesc}`;
+    document.getElementById('out-desc').textContent = `Synthesized from ${matches.length} matching consumer response${matches.length !== 1 ? 's' : ''}`;
+    document.getElementById('out-q-label').textContent = QUESTIONS[selectedQ];
+    document.getElementById('out-count').textContent = `${responses.length} responses sampled`;
+
+    const paragraphs = data.reply.split('\n').filter(p => p.trim());
+    document.getElementById('out-text').innerHTML = paragraphs.map(p => `<p>${p}</p>`).join('');
+    document.getElementById('out-card').style.display = 'block';
+    document.getElementById('out-card').scrollIntoView({ behavior: 'smooth' });
+
+  } catch(err) {
+    clearInterval(spinInterval);
+    alert('Something went wrong: ' + err.message);
+  }
+
+  document.getElementById('spin').style.display = 'none';
+  document.getElementById('gbtn').disabled = false;
+}
+
+function copyOutput() {
+  const name = document.getElementById('out-name').textContent;
+  const q = document.getElementById('out-q-label').textContent;
+  const text = document.getElementById('out-text').innerText;
+  navigator.clipboard.writeText(`${name}\n${q}\n\n${text}`).then(() => {
+    const b = document.querySelector('.btn-copy');
+    b.textContent = 'Copied!';
+    setTimeout(() => b.textContent = 'Copy text', 2000);
+  });
+}
+</script>
+</body>
+</html>
