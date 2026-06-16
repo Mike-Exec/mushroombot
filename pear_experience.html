@@ -89,25 +89,25 @@ select[multiple] option:checked{background:#7d3c64;color:#fff}
 
 /* OUTPUT */
 .sample-warning{font-size:11px;color:#b35900;background:#fff3e0;border:1px solid #ffd9a8;border-radius:6px;padding:4px 10px;margin-top:6px;display:none;font-family:Arial,sans-serif;font-weight:bold}
-.persona-row{display:flex;align-items:center;gap:14px;background:#f3e6ee;border-radius:8px;padding:0.9rem 1.1rem;margin-bottom:1.2rem;border:1px solid #e3c9d8}
-.av{width:48px;height:48px;border-radius:50%;background:#7d3c64;color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:bold;flex-shrink:0}
-.persona-info h3{font-size:1rem;color:#7d3c64;margin-bottom:2px;font-family:Georgia,serif}
-.persona-info p{font-size:12px;color:#4a4a4a;line-height:1.5}
-.q-label{display:inline-block;background:#7d3c64;color:#fff;font-size:11px;padding:3px 10px;border-radius:20px;font-family:Arial,sans-serif;font-weight:bold;margin-bottom:0.5rem}
-.sentiment-label{font-size:11px;font-weight:bold;color:#4a4a4a;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;font-family:Arial,sans-serif}
-.sentiment-track{display:flex;height:22px;border-radius:6px;overflow:hidden;border:1px solid #e8e0e4}
-.sentiment-seg{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;color:#fff;font-family:Arial,sans-serif}
+.persona-row{display:flex;align-items:center;gap:10px;background:#f3e6ee;border-radius:6px;padding:0.6rem 0.85rem;margin-bottom:0.75rem;border:1px solid #e3c9d8}
+.av{width:36px;height:36px;border-radius:50%;background:#7d3c64;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0}
+.persona-info h3{font-size:0.9rem;color:#7d3c64;margin-bottom:1px;font-family:Georgia,serif}
+.persona-info p{font-size:11px;color:#767676;line-height:1.4}
+.q-label{display:inline-block;background:#7d3c64;color:#fff;font-size:10px;padding:2px 8px;border-radius:20px;font-family:Arial,sans-serif;font-weight:bold;margin-bottom:0.3rem}
+.sentiment-label{font-size:10px;font-weight:bold;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;font-family:Arial,sans-serif}
+.sentiment-track{display:flex;height:18px;border-radius:4px;overflow:hidden;border:1px solid #e8e0e4}
+.sentiment-seg{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:bold;color:#fff;font-family:Arial,sans-serif}
 .sentiment-positive{background:#5a9367}
 .sentiment-mixed{background:#d9a441}
 .sentiment-negative{background:#c0556e}
-.sentiment-legend{display:flex;gap:1rem;margin-top:6px;font-size:11px;color:#888;font-family:Arial,sans-serif}
+.sentiment-legend{display:flex;gap:0.75rem;margin-top:4px;font-size:10px;color:#aaa;font-family:Arial,sans-serif}
 .sentiment-legend span{display:inline-flex;align-items:center;gap:4px}
 .sentiment-dot{width:9px;height:9px;border-radius:50%;display:inline-block}
-.sentiment-bar{margin-bottom:1.25rem}
-.response-text{font-size:15px;line-height:1.85;color:#1b1b1b;font-family:Georgia,serif}
-.response-text p{margin-bottom:1.1rem}
-.meta-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;flex-wrap:wrap;gap:0.5rem}
-.count-badge{font-size:12px;color:#767676;font-family:Arial,sans-serif;font-style:italic}
+.sentiment-bar{margin-bottom:0.75rem}
+.response-text{font-size:14px;line-height:1.75;color:#1b1b1b;font-family:Georgia,serif}
+.response-text p{margin-bottom:0.75rem}
+.meta-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;flex-wrap:wrap;gap:0.4rem}
+.count-badge{font-size:11px;color:#aaa;font-family:Arial,sans-serif;font-style:italic}
 .btn-copy{padding:0.4rem 0.9rem;background:#fafaf7;border:1px solid #ddd;border-radius:6px;font-size:12px;cursor:pointer;color:#4a4a4a;font-family:Arial,sans-serif}
 .btn-copy:hover{border-color:#7d3c64;color:#7d3c64}
 
@@ -193,7 +193,7 @@ select[multiple] option:checked{background:#7d3c64;color:#fff}
           <div class="card-title">Select Consumer Profile</div>
           <div class="filter-stack">
             <div class="fg">
-              <label>Gender <span class="hint">(none = all)</span></label>
+              <label>Gender <span class="hint">— leave blank to include all</span></label>
               <select id="f-gender" multiple size="2">
                 <option value="Female">Female</option>
                 <option value="Male">Male</option>
@@ -201,7 +201,7 @@ select[multiple] option:checked{background:#7d3c64;color:#fff}
               <button type="button" class="clear-btn" onclick="clearFilter('f-gender')">Clear</button>
             </div>
             <div class="fg">
-              <label>Generation <span class="hint">(none = all)</span></label>
+              <label>Generation <span class="hint">— leave blank to include all</span></label>
               <select id="f-age" multiple size="4">
                 <option value="Gen Z">Gen Z</option>
                 <option value="Millenials">Millennials</option>
@@ -211,7 +211,7 @@ select[multiple] option:checked{background:#7d3c64;color:#fff}
               <button type="button" class="clear-btn" onclick="clearFilter('f-age')">Clear</button>
             </div>
             <div class="fg">
-              <label>Income <span class="hint">(none = all)</span></label>
+              <label>Income <span class="hint">— leave blank to include all</span></label>
               <select id="f-income" multiple size="4">
                 <option value="<$50K">Less than $50K</option>
                 <option value="$50K-$100K">$50K–$100K</option>
@@ -221,7 +221,7 @@ select[multiple] option:checked{background:#7d3c64;color:#fff}
               <button type="button" class="clear-btn" onclick="clearFilter('f-income')">Clear</button>
             </div>
             <div class="fg">
-              <label>Region <span class="hint">(none = all)</span></label>
+              <label>Region <span class="hint">— leave blank to include all</span></label>
               <select id="f-region" multiple size="4">
                 <option value="West">West</option>
                 <option value="Ontario">Ontario</option>
@@ -231,7 +231,7 @@ select[multiple] option:checked{background:#7d3c64;color:#fff}
               <button type="button" class="clear-btn" onclick="clearFilter('f-region')">Clear</button>
             </div>
             <div class="fg">
-              <label>Consumption Frequency <span class="hint">(none = all)</span></label>
+              <label>Consumption Frequency <span class="hint">— leave blank to include all</span></label>
               <select id="f-consumption" multiple size="4">
                 <option value="More than once">More than once a week</option>
                 <option value="Once">Once a week</option>
@@ -241,17 +241,19 @@ select[multiple] option:checked{background:#7d3c64;color:#fff}
               <button type="button" class="clear-btn" onclick="clearFilter('f-consumption')">Clear</button>
             </div>
             <div class="fg">
-              <label>Purchased Last 30 Days <span class="hint">(none = all)</span></label>
-              <select id="f-purchased" multiple size="4">
+              <label>Purchased Last 30 Days <span class="hint">— leave blank to include all</span></label>
+              <select id="f-purchased" multiple size="5">
                 <option value="Once">Once</option>
                 <option value="Twice">Twice</option>
                 <option value="3 times">3 times</option>
                 <option value="More than 3x">More than 3 times</option>
+                <option value="Did not purchase">Did not purchase</option>
               </select>
               <button type="button" class="clear-btn" onclick="clearFilter('f-purchased')">Clear</button>
             </div>
           </div>
           <div class="match-info" id="match-count">Select filters to see matching respondents</div>
+          <div style="font-size:10px;color:#bbb;font-family:Arial,sans-serif;margin-top:4px">Tip: hold Ctrl (Windows) or Cmd (Mac) to select multiple options. Leave a filter blank to include all values.</div>
         </div>
 
       </div>
@@ -308,7 +310,7 @@ select[multiple] option:checked{background:#7d3c64;color:#fff}
     </div>
 
     <!-- OUTPUT -->
-    <div class="card" id="out-card" style="display:none">
+    <div class="card" id="out-card" style="display:none;padding:1rem">
       <div class="meta-bar">
         <div>
           <div class="q-label" id="out-q-label"></div>
