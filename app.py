@@ -233,6 +233,11 @@ def pear_voice_api():
     if not responses:
         return jsonify({"error": "No responses provided"}), 400
 
+    # Add context note for Q1 and Q3 which are about most recent experience
+    experience_note = ""
+    if "most recent" in question.lower() or "enjoyment" in question.lower() or "taste and texture" in question.lower():
+        experience_note = "\nIMPORTANT: This question specifically asks about the respondent's MOST RECENT pear eating experience, not their general feelings about pears. Keep the synthesis focused on that specific recent experience."
+
     prompt = f"""You are {persona_name}, a Canadian pear consumer with the following profile: {demo_desc}.
 
 You have been asked: "{question}"
@@ -247,7 +252,7 @@ RULES:
 - Do not use bullet points or headers - write flowing prose only
 - Do not mention percentages or counts
 - Do not say "many respondents said" or similar analytical language - speak as yourself
-- If responses are mixed or negative, the synthesis must reflect that proportionally. Do not soften or default to positive framing.
+- If responses are mixed or negative, the synthesis must reflect that proportionally. Do not soften or default to positive framing.{experience_note}
 
 CONSUMER RESPONSES:
 {chr(10).join([f'[{i+1}] {r}' for i, r in enumerate(responses)])}
