@@ -42,11 +42,23 @@ select[multiple] option:checked{background:#7d3c64;color:#fff}
 .clear-btn:hover{border-color:#a8527a;color:#7d3c64}
 .match-info{margin-top:0.75rem;font-size:12px;color:#767676;font-family:Arial,sans-serif}
 
+/* TOP PANEL LAYOUT */
+.top-panel{display:grid;grid-template-columns:1fr auto 380px;gap:0;min-height:340px}
+.charts-col{padding-right:1.25rem;min-width:0}
+.panel-divider{width:1px;background:#f3e6ee;margin:0 1.25rem}
+.filters-col{min-width:0}
+.filter-stack{display:flex;flex-direction:column;gap:0.65rem}
+.filter-stack .fg label{font-size:10px}
+.filter-stack select[multiple]{font-size:12px}
+.filter-stack .clear-btn{font-size:10px;padding:2px 8px}
+.charts-grid-2x2{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+.chart-title-sm{font-size:10px;font-weight:bold;color:#7d3c64;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.4rem;text-align:center}
+
 /* CHARTS */
 .charts-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1rem}
 .chart-wrap{text-align:center}
 .chart-title{font-size:11px;font-weight:bold;color:#7d3c64;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem}
-.donut-container{position:relative;width:100px;height:100px;margin:0 auto 0.5rem}
+.donut-container{position:relative;width:80px;height:80px;margin:0 auto 0.4rem}
 .donut-svg{width:100%;height:100%}
 .donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:11px;font-weight:bold;color:#4a4a4a;text-align:center;line-height:1.2;pointer-events:none}
 .chart-legend{font-size:10px;color:#666;font-family:Arial,sans-serif;text-align:left;line-height:1.8}
@@ -110,7 +122,7 @@ select[multiple] option:checked{background:#7d3c64;color:#fff}
 .history-item.expanded .h-text{max-height:1000px}
 .history-item .h-toggle{font-size:11px;color:#a8527a;cursor:pointer;font-weight:bold}
 .footer{font-size:11px;color:#aaa;text-align:center;margin-top:1.5rem;padding-top:1rem;border-top:1px solid #eee}
-@media(max-width:700px){.filter-grid,.filter-grid-2,.q-grid,.charts-grid{grid-template-columns:1fr}.app-body{padding:1rem}}
+@media(max-width:800px){.top-panel{grid-template-columns:1fr}.panel-divider{width:100%;height:1px;margin:1rem 0}.charts-col{padding-right:0}.q-grid,.charts-grid-2x2{grid-template-columns:1fr 1fr}.app-body{padding:1rem}}
 </style>
 </head>
 <body>
@@ -137,52 +149,87 @@ select[multiple] option:checked{background:#7d3c64;color:#fff}
   </div>
   <div class="app-body">
 
-    <!-- FILTERS -->
+    <!-- COMBINED FILTERS + CHARTS PANEL -->
     <div class="card">
-      <div class="card-title">Select Consumer Profile</div>
-      <div class="filter-grid">
-        <div class="fg">
-          <label>Gender <span class="hint">(none = all)</span></label>
-          <select id="f-gender" multiple size="2">
-            <option value="Female">Female</option>
-            <option value="Male">Male</option>
-          </select>
-          <button type="button" class="clear-btn" onclick="clearFilter('f-gender')">Clear</button>
+      <div class="top-panel">
+
+        <!-- LEFT: CHARTS -->
+        <div class="charts-col" id="charts-col">
+          <div class="card-title">Profile Snapshot</div>
+          <div id="charts-empty" style="display:flex;align-items:center;justify-content:center;height:260px;color:#ccc;font-size:13px;font-style:italic;font-family:Georgia,serif;text-align:center">
+            Select filters to see<br>your consumer profile
+          </div>
+          <div id="charts-content" style="display:none">
+            <div class="charts-grid-2x2">
+              <div class="chart-wrap">
+                <div class="chart-title-sm">Varieties</div>
+                <div class="donut-container"><svg class="donut-svg" id="chart-varieties" viewBox="0 0 100 100"></svg><div class="donut-center" id="center-varieties"></div></div>
+                <div class="chart-legend" id="legend-varieties"></div>
+              </div>
+              <div class="chart-wrap">
+                <div class="chart-title-sm">Format</div>
+                <div class="donut-container"><svg class="donut-svg" id="chart-format" viewBox="0 0 100 100"></svg><div class="donut-center" id="center-format"></div></div>
+                <div class="chart-legend" id="legend-format"></div>
+              </div>
+              <div class="chart-wrap">
+                <div class="chart-title-sm">Retailer</div>
+                <div class="donut-container"><svg class="donut-svg" id="chart-retailer" viewBox="0 0 100 100"></svg><div class="donut-center" id="center-retailer"></div></div>
+                <div class="chart-legend" id="legend-retailer"></div>
+              </div>
+              <div class="chart-wrap">
+                <div class="chart-title-sm">Purchases</div>
+                <div class="donut-container"><svg class="donut-svg" id="chart-freq" viewBox="0 0 100 100"></svg><div class="donut-center" id="center-freq"></div></div>
+                <div class="chart-legend" id="legend-freq"></div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="fg">
-          <label>Generation <span class="hint">(none = all)</span></label>
-          <select id="f-age" multiple size="4">
-            <option value="Gen Z">Gen Z</option>
-            <option value="Millenials">Millennials</option>
-            <option value="Gen X">Gen X</option>
-            <option value="Baby Boomers">Baby Boomers</option>
-          </select>
-          <button type="button" class="clear-btn" onclick="clearFilter('f-age')">Clear</button>
-        </div>
-        <div class="fg">
-          <label>Income <span class="hint">(none = all)</span></label>
-          <select id="f-income" multiple size="4">
-            <option value="<$50K">Less than $50K</option>
-            <option value="$50K-$100K">$50K–$100K</option>
-            <option value="$100K-$150K">$100K–$150K</option>
-            <option value=">$150K">More than $150K</option>
-          </select>
-          <button type="button" class="clear-btn" onclick="clearFilter('f-income')">Clear</button>
-        </div>
-      </div>
-      <div class="filter-grid-2">
-        <div class="fg">
-          <label>Region <span class="hint">(none = all)</span></label>
-          <select id="f-region" multiple size="4">
-            <option value="West">West</option>
-            <option value="Ontario">Ontario</option>
-            <option value="Québec">Québec</option>
-            <option value="Atlantic">Atlantic Canada</option>
-          </select>
-          <button type="button" class="clear-btn" onclick="clearFilter('f-region')">Clear</button>
-        </div>
-        <div>
-          <div class="filter-grid-2">
+
+        <!-- DIVIDER -->
+        <div class="panel-divider"></div>
+
+        <!-- RIGHT: FILTERS -->
+        <div class="filters-col">
+          <div class="card-title">Select Consumer Profile</div>
+          <div class="filter-stack">
+            <div class="fg">
+              <label>Gender <span class="hint">(none = all)</span></label>
+              <select id="f-gender" multiple size="2">
+                <option value="Female">Female</option>
+                <option value="Male">Male</option>
+              </select>
+              <button type="button" class="clear-btn" onclick="clearFilter('f-gender')">Clear</button>
+            </div>
+            <div class="fg">
+              <label>Generation <span class="hint">(none = all)</span></label>
+              <select id="f-age" multiple size="4">
+                <option value="Gen Z">Gen Z</option>
+                <option value="Millenials">Millennials</option>
+                <option value="Gen X">Gen X</option>
+                <option value="Baby Boomers">Baby Boomers</option>
+              </select>
+              <button type="button" class="clear-btn" onclick="clearFilter('f-age')">Clear</button>
+            </div>
+            <div class="fg">
+              <label>Income <span class="hint">(none = all)</span></label>
+              <select id="f-income" multiple size="4">
+                <option value="<$50K">Less than $50K</option>
+                <option value="$50K-$100K">$50K–$100K</option>
+                <option value="$100K-$150K">$100K–$150K</option>
+                <option value=">$150K">More than $150K</option>
+              </select>
+              <button type="button" class="clear-btn" onclick="clearFilter('f-income')">Clear</button>
+            </div>
+            <div class="fg">
+              <label>Region <span class="hint">(none = all)</span></label>
+              <select id="f-region" multiple size="4">
+                <option value="West">West</option>
+                <option value="Ontario">Ontario</option>
+                <option value="Québec">Québec</option>
+                <option value="Atlantic">Atlantic Canada</option>
+              </select>
+              <button type="button" class="clear-btn" onclick="clearFilter('f-region')">Clear</button>
+            </div>
             <div class="fg">
               <label>Consumption Frequency <span class="hint">(none = all)</span></label>
               <select id="f-consumption" multiple size="4">
@@ -204,35 +251,9 @@ select[multiple] option:checked{background:#7d3c64;color:#fff}
               <button type="button" class="clear-btn" onclick="clearFilter('f-purchased')">Clear</button>
             </div>
           </div>
+          <div class="match-info" id="match-count">Select filters to see matching respondents</div>
         </div>
-      </div>
-      <div class="match-info" id="match-count">Select filters to see matching respondents</div>
-    </div>
 
-    <!-- PROFILE SNAPSHOT CHARTS -->
-    <div class="card" id="charts-card" style="display:none">
-      <div class="card-title">Profile Snapshot — Matched Consumers</div>
-      <div class="charts-grid">
-        <div class="chart-wrap">
-          <div class="chart-title">Pear Varieties</div>
-          <div class="donut-container"><svg class="donut-svg" id="chart-varieties" viewBox="0 0 100 100"></svg><div class="donut-center" id="center-varieties"></div></div>
-          <div class="chart-legend" id="legend-varieties"></div>
-        </div>
-        <div class="chart-wrap">
-          <div class="chart-title">Retail Format</div>
-          <div class="donut-container"><svg class="donut-svg" id="chart-format" viewBox="0 0 100 100"></svg><div class="donut-center" id="center-format"></div></div>
-          <div class="chart-legend" id="legend-format"></div>
-        </div>
-        <div class="chart-wrap">
-          <div class="chart-title">Retailer</div>
-          <div class="donut-container"><svg class="donut-svg" id="chart-retailer" viewBox="0 0 100 100"></svg><div class="donut-center" id="center-retailer"></div></div>
-          <div class="chart-legend" id="legend-retailer"></div>
-        </div>
-        <div class="chart-wrap">
-          <div class="chart-title">Buy Frequency</div>
-          <div class="donut-container"><svg class="donut-svg" id="chart-freq" viewBox="0 0 100 100"></svg><div class="donut-center" id="center-freq"></div></div>
-          <div class="chart-legend" id="legend-freq"></div>
-        </div>
       </div>
     </div>
 
@@ -423,12 +444,14 @@ function updateMatchCount() {
   if(matches.length === 0) {
     el.textContent = 'No respondents match this combination. Try broadening your filters.';
     el.style.color = '#c0392b';
-    document.getElementById('charts-card').style.display = 'none';
+    document.getElementById('charts-empty').style.display = 'flex';
+    document.getElementById('charts-content').style.display = 'none';
   } else {
     el.textContent = `${matches.length} respondent${matches.length !== 1 ? 's' : ''} match this profile`;
     el.style.color = '#7d3c64';
+    document.getElementById('charts-empty').style.display = 'none';
+    document.getElementById('charts-content').style.display = 'block';
     renderCharts(matches);
-    document.getElementById('charts-card').style.display = 'block';
   }
 }
 
