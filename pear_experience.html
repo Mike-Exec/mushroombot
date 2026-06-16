@@ -242,19 +242,19 @@ select[multiple] option:checked{background:#7d3c64;color:#fff}
 
     <!-- QUESTION SELECTION -->
     <div class="card">
-      <div class="card-title">Select a question regarding your most recent pear experience</div>
+      <div class="card-title">Select a question</div>
       <div class="q-grid">
         <div class="q-btn active" data-q="q1" onclick="selectQ(this)">
           <span class="q-num">Question 1</span>
-          Did you enjoy your pear eating experience?
+          Enjoyment of your most recent pear eating experience
         </div>
         <div class="q-btn" data-q="q2" onclick="selectQ(this)">
           <span class="q-num">Question 2</span>
-          Do you have a good idea of the ripeness you want?
+          Your general understanding of preferred ripeness
         </div>
         <div class="q-btn" data-q="q3" onclick="selectQ(this)">
           <span class="q-num">Question 3</span>
-          What was the taste and texture like?
+          Taste and texture of your most recent pear experience
         </div>
       </div>
     </div>
@@ -332,9 +332,9 @@ let selectedQ = "q1";
 let questionHistory = [];
 
 const QUESTIONS = {
-  q1: "Did you enjoy your pear eating experience?",
-  q2: "Do you have a good idea of the ripeness you want?",
-  q3: "What was the taste and texture like?"
+  q1: "Enjoyment of your most recent pear eating experience",
+  q2: "Your general understanding of preferred ripeness",
+  q3: "Taste and texture of your most recent pear experience"
 };
 
 const CHART_COLORS = ['#7d3c64','#a8527a','#c97a9a','#e3a8c0','#5a9367','#8fbf7a','#d9a441','#4a7fa8','#888'];
