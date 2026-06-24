@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Snacking Veg Experience | Execulytics</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f5f5f0;color:#1b1b1b;min-height:100vh}
+.screen{display:none}
+.screen.active{display:flex;flex-direction:column}
+#login.active{align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#1a4a1a 0%,#2d7a2d 60%,#4a9e4a 100%)}
+.lbox{background:#fff;border-radius:14px;padding:2.5rem 2rem;width:100%;max-width:360px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.18)}
+.brand{font-size:11px;letter-spacing:0.12em;color:#2d7a2d;text-transform:uppercase;font-weight:bold;margin-bottom:4px}
+.lbox h1{font-size:1.4rem;font-weight:normal;font-family:Georgia,serif;margin-bottom:4px}
+.lbox p{font-size:13px;color:#767676;margin-bottom:1.5rem}
+.lbox input{width:100%;padding:0.65rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:0.75rem;outline:none;font-family:Arial,sans-serif}
+.lbox input:focus{border-color:#4a9e4a}
+.btn-g{width:100%;padding:0.75rem;background:#2d7a2d;color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer;font-weight:bold;transition:background 0.15s}
+.btn-g:hover{background:#4a9e4a}
+.err{color:#c0392b;font-size:12px;margin-top:6px}
+#app.active{min-height:100vh}
+.topbar{background:#2d7a2d;color:#fff;padding:0.85rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.topbar .tb{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;opacity:0.75;margin-bottom:2px}
+.topbar h2{font-size:1.1rem;font-weight:normal;font-family:Georgia,serif}
+.btn-sm{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:0.35rem 0.9rem;border-radius:6px;cursor:pointer;font-size:12px}
+.app-body{max-width:980px;margin:0 auto;padding:1.5rem}
+.card{background:#fff;border:1px solid #e0e8e0;border-radius:10px;padding:1.25rem;margin-bottom:1.25rem;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
+.card-title{font-size:11px;font-weight:bold;color:#2d7a2d;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid #e8f5e8}
+.country-row{display:flex;gap:0.75rem;margin-bottom:1rem}
+.country-btn{flex:1;padding:0.6rem;border:1px solid #ddd;border-radius:8px;font-size:13px;cursor:pointer;background:#fafaf7;color:#4a4a4a;text-align:center;font-weight:bold;transition:all 0.15s;font-family:Arial,sans-serif}
+.country-btn:hover{border-color:#4a9e4a;color:#2d7a2d}
+.country-btn.active{background:#2d7a2d;color:#fff;border-color:#2d7a2d}
+.filter-top-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.filter-row-2{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1rem}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fg label{font-size:11px;font-weight:bold;color:#4a4a4a;text-transform:uppercase;letter-spacing:0.05em}
+.fg label .hint{text-transform:none;font-weight:normal;color:#aaa;font-size:10px;letter-spacing:0}
+select{padding:0.55rem 0.8rem;border:1px solid #ddd;border-radius:7px;font-size:13px;color:#1b1b1b;background:#fff;width:100%;outline:none;font-family:Arial,sans-serif}
+select:focus{border-color:#4a9e4a}
+select[multiple]{padding:0.3rem}
+select[multiple] option{padding:0.35rem 0.6rem;border-radius:4px}
+select[multiple] option:checked{background:#2d7a2d;color:#fff}
+select:disabled{background:#f5f5f5;color:#bbb;cursor:not-allowed}
+.clear-btn{margin-top:4px;padding:3px 10px;font-size:11px;border:1px solid #ddd;border-radius:6px;background:#fafaf7;color:#888;cursor:pointer;align-self:flex-start;font-family:Arial,sans-serif;transition:all 0.15s}
+.clear-btn:hover{border-color:#4a9e4a;color:#2d7a2d}
+.match-info{margin-top:0.75rem;font-size:12px;color:#767676;font-family:Arial,sans-serif}
+.tip{font-size:10px;color:#bbb;font-family:Arial,sans-serif;margin-top:3px}
+
+/* CHARTS */
+.charts-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.chart-wrap{text-align:center}
+.chart-title-sm{font-size:10px;font-weight:bold;color:#2d7a2d;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.4rem}
+.donut-container{position:relative;width:80px;height:80px;margin:0 auto 0.4rem}
+.donut-svg{width:100%;height:100%}
+.donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:11px;font-weight:bold;color:#4a4a4a;text-align:center;line-height:1.2;pointer-events:none}
+.chart-legend{font-size:10px;color:#666;font-family:Arial,sans-serif;text-align:left;line-height:1.8}
+.legend-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}
+
+/* QUESTIONS */
+.q-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+.q-btn{padding:0.65rem 1rem;border:1px solid #ddd;border-radius:8px;font-size:13px;cursor:pointer;background:#fafaf7;color:#4a4a4a;text-align:left;line-height:1.4;transition:all 0.15s}
+.q-btn:hover{border-color:#4a9e4a;color:#2d7a2d;background:#f0faf0}
+.q-btn.active{background:#2d7a2d;color:#fff;border-color:#2d7a2d}
+.q-num{font-size:10px;font-weight:bold;opacity:0.7;display:block;margin-bottom:3px}
+
+/* GENERATE */
+.gen-bar{text-align:center;margin:1.25rem 0}
+.btn-gen{padding:0.85rem 2.5rem;background:#2d7a2d;color:#fff;border:none;border-radius:10px;font-size:15px;cursor:pointer;font-family:Georgia,serif;font-style:italic;transition:all 0.2s;box-shadow:0 4px 16px rgba(45,122,45,0.2)}
+.btn-gen:hover{background:#4a9e4a;transform:translateY(-1px)}
+.btn-gen:disabled{background:#aaa;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* SPINNER */
+.spinner-wrap{text-align:center;padding:2.5rem;display:none}
+.spinner{width:36px;height:36px;border:3px solid #e8f5e8;border-top-color:#2d7a2d;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 0.8rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner-wrap p{font-size:13px;color:#767676;font-style:italic}
+
+/* EMPTY STATE */
+#empty-state{text-align:center;padding:2.5rem 1.5rem}
+.empty-text{font-size:14px;color:#888;font-family:Georgia,serif;font-style:italic;max-width:420px;margin:0 auto;line-height:1.6}
+
+/* OUTPUT */
+.sample-warning{font-size:11px;color:#b35900;background:#fff3e0;border:1px solid #ffd9a8;border-radius:6px;padding:4px 10px;margin-top:6px;display:none;font-family:Arial,sans-serif;font-weight:bold}
+.persona-row{display:flex;align-items:center;gap:10px;background:#e8f5e8;border-radius:6px;padding:0.6rem 0.85rem;margin-bottom:0.75rem;border:1px solid #c8e8c8}
+.av{width:36px;height:36px;border-radius:50%;background:#2d7a2d;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0}
+.persona-info h3{font-size:0.9rem;color:#2d7a2d;margin-bottom:1px;font-family:Georgia,serif}
+.persona-info p{font-size:11px;color:#767676;line-height:1.4}
+.q-label{display:inline-block;background:#2d7a2d;color:#fff;font-size:10px;padding:2px 8px;border-radius:20px;font-family:Arial,sans-serif;font-weight:bold;margin-bottom:0.3rem}
+.sentiment-bar{margin-bottom:0.75rem}
+.sentiment-label{font-size:10px;font-weight:bold;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;font-family:Arial,sans-serif}
+.sentiment-track{display:flex;height:18px;border-radius:4px;overflow:hidden;border:1px solid #e0e8e0}
+.sentiment-seg{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:bold;color:#fff;font-family:Arial,sans-serif}
+.sentiment-positive{background:#5a9367}
+.sentiment-mixed{background:#d9a441}
+.sentiment-negative{background:#c0556e}
+.sentiment-legend{display:flex;gap:0.75rem;margin-top:4px;font-size:10px;color:#aaa;font-family:Arial,sans-serif}
+.sentiment-legend span{display:inline-flex;align-items:center;gap:4px}
+.sentiment-dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+.response-text{font-size:14px;line-height:1.75;color:#1b1b1b;font-family:Georgia,serif}
+.response-text p{margin-bottom:0.75rem}
+.meta-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;flex-wrap:wrap;gap:0.4rem}
+.count-badge{font-size:11px;color:#aaa;font-family:Arial,sans-serif;font-style:italic}
+.btn-copy{padding:0.4rem 0.9rem;background:#fafaf7;border:1px solid #ddd;border-radius:6px;font-size:12px;cursor:pointer;color:#4a4a4a;font-family:Arial,sans-serif}
+.btn-copy:hover{border-color:#2d7a2d;color:#2d7a2d}
+
+/* HISTORY */
+.history-item{padding:0.75rem 0;border-bottom:1px solid #e8f5e8;font-family:Arial,sans-serif}
+.history-item:last-child{border-bottom:none}
+.history-item .h-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.history-item .h-name{font-weight:bold;color:#2d7a2d;font-size:13px}
+.history-item .h-time{font-size:10px;color:#bbb}
+.history-item .h-q{font-size:12px;color:#888;font-style:italic;margin-bottom:4px}
+.history-item .h-text{font-size:13px;color:#555;line-height:1.6;max-height:0;overflow:hidden;transition:max-height 0.3s}
+.history-item.expanded .h-text{max-height:1000px}
+.history-item .h-toggle{font-size:11px;color:#4a9e4a;cursor:pointer;font-weight:bold}
+.footer{font-size:11px;color:#aaa;text-align:center;margin-top:1.5rem;padding-top:1rem;border-top:1px solid #eee}
+@media(max-width:700px){.filter-top-grid,.filter-row-2,.q-grid,.charts-grid-4{grid-template-columns:1fr 1fr}.app-body{padding:1rem}}
+</style>
+</head>
+<body>
+
+<div id="login" class="screen active">
+  <div class="lbox">
+    <div class="brand">Execulytics Consulting</div>
+    <h1>Snacking Veg Experience</h1>
+    <p>Consumer insights platform</p>
+    <input type="text" id="lu" placeholder="Username" autocomplete="username"/>
+    <input type="password" id="lp" placeholder="Password" autocomplete="current-password"/>
+    <button class="btn-g" onclick="doLogin()">Sign In</button>
+    <div class="err" id="lerr"></div>
+  </div>
+</div>
+
+<div id="app" class="screen">
+  <div class="topbar">
+    <div>
+      <div class="tb">Execulytics Consulting</div>
+      <h2>Snacking Veg Experience</h2>
+    </div>
+    <button class="btn-sm" onclick="doLogout()">Sign Out</button>
+  </div>
+  <div class="app-body">
+
+    <!-- FILTERS -->
+    <div class="card">
+      <div class="card-title">Select Consumer Profile</div>
+
+      <!-- COUNTRY FIRST -->
+      <div class="fg" style="margin-bottom:1rem">
+        <label>Country <span class="hint">— select to unlock region and format filters</span></label>
+        <div class="country-row">
+          <div class="country-btn" id="btn-canada" onclick="selectCountry('Canada')">🇨🇦 Canada</div>
+          <div class="country-btn" id="btn-usa" onclick="selectCountry('USA')">🇺🇸 United States</div>
+          <div class="country-btn" id="btn-both" onclick="selectCountry('')">Both Countries</div>
+        </div>
+      </div>
+
+      <div class="filter-top-grid">
+        <div class="fg">
+          <label>Gender <span class="hint">— leave blank to include all</span></label>
+          <select id="f-gender" multiple size="2">
+            <option value="Female">Female</option>
+            <option value="Male">Male</option>
+          </select>
+          <button type="button" class="clear-btn" onclick="clearFilter('f-gender')">Clear</button>
+        </div>
+        <div class="fg">
+          <label>Generation <span class="hint">— leave blank to include all</span></label>
+          <select id="f-age" multiple size="4">
+            <option value="Gen Z">Gen Z</option>
+            <option value="Millennial">Millennial</option>
+            <option value="Gen X">Gen X</option>
+            <option value="Baby Boomer">Baby Boomer</option>
+          </select>
+          <button type="button" class="clear-btn" onclick="clearFilter('f-age')">Clear</button>
+        </div>
+        <div class="fg">
+          <label>Income <span class="hint">— leave blank to include all</span></label>
+          <select id="f-income" multiple size="4">
+            <option value="<$50K">Less than $50K</option>
+            <option value="$50K-$99K">$50K–$99K</option>
+            <option value="$100K-$149K">$100K–$149K</option>
+            <option value=">$150K">More than $150K</option>
+          </select>
+          <button type="button" class="clear-btn" onclick="clearFilter('f-income')">Clear</button>
+        </div>
+      </div>
+
+      <div class="filter-row-2">
+        <div class="fg">
+          <label>Region <span class="hint">— select country first</span></label>
+          <select id="f-region" multiple size="4" disabled>
+            <option value="" disabled>Select a country first</option>
+          </select>
+          <button type="button" class="clear-btn" onclick="clearFilter('f-region')">Clear</button>
+        </div>
+        <div class="fg">
+          <label>Retail Format <span class="hint">— select country first</span></label>
+          <select id="f-format" multiple size="5" disabled>
+            <option value="" disabled>Select a country first</option>
+          </select>
+          <button type="button" class="clear-btn" onclick="clearFilter('f-format')">Clear</button>
+        </div>
+        <div class="fg">
+          <label>Snacking Frequency <span class="hint">— leave blank to include all</span></label>
+          <select id="f-freq" multiple size="6">
+            <option value="Multiple per day">Multiple per day</option>
+            <option value="Once per day">Once per day</option>
+            <option value="Some days">Some days</option>
+            <option value="Rarely">Rarely</option>
+            <option value="Only with guests">Only with guests</option>
+            <option value="Never">Never</option>
+          </select>
+          <button type="button" class="clear-btn" onclick="clearFilter('f-freq')">Clear</button>
+        </div>
+      </div>
+
+      <div class="fg" style="margin-top:1rem;max-width:340px">
+        <label>Preferred Snacking Vegetable <span class="hint">— leave blank to include all</span></label>
+        <select id="f-veg" multiple size="4">
+          <option value="Mini Cucumbers">Mini Cucumbers</option>
+          <option value="Snacking Tomatoes">Snacking Tomatoes</option>
+          <option value="Mini Seedless Peppers">Mini Seedless Peppers</option>
+          <option value="None of the above">None of the above</option>
+        </select>
+        <button type="button" class="clear-btn" onclick="clearFilter('f-veg')">Clear</button>
+      </div>
+
+      <div class="match-info" id="match-count" style="margin-top:0.75rem">Select filters to see matching respondents</div>
+      <div class="tip">Hold Ctrl (Windows) or Cmd (Mac) to select multiple. Leave blank to include all.</div>
+    </div>
+
+    <!-- CHARTS -->
+    <div class="card" id="charts-card" style="display:none">
+      <div class="card-title">Profile Snapshot — Matched Consumers</div>
+      <div class="charts-grid-4">
+        <div class="chart-wrap">
+          <div class="chart-title-sm">Preferred Veg</div>
+          <div class="donut-container"><svg class="donut-svg" id="chart-veg" viewBox="0 0 100 100"></svg><div class="donut-center" id="center-veg"></div></div>
+          <div class="chart-legend" id="legend-veg"></div>
+        </div>
+        <div class="chart-wrap">
+          <div class="chart-title-sm">Retail Format</div>
+          <div class="donut-container"><svg class="donut-svg" id="chart-format" viewBox="0 0 100 100"></svg><div class="donut-center" id="center-format"></div></div>
+          <div class="chart-legend" id="legend-format"></div>
+        </div>
+        <div class="chart-wrap">
+          <div class="chart-title-sm">Snacking Frequency</div>
+          <div class="donut-container"><svg class="donut-svg" id="chart-freq" viewBox="0 0 100 100"></svg><div class="donut-center" id="center-freq"></div></div>
+          <div class="chart-legend" id="legend-freq"></div>
+        </div>
+        <div class="chart-wrap">
+          <div class="chart-title-sm">Generation</div>
+          <div class="donut-container"><svg class="donut-svg" id="chart-age" viewBox="0 0 100 100"></svg><div class="donut-center" id="center-age"></div></div>
+          <div class="chart-legend" id="legend-age"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUESTIONS -->
+    <div class="card">
+      <div class="card-title">Select a question</div>
+      <div class="q-grid">
+        <div class="q-btn active" data-q="q1" onclick="selectQ(this)">
+          <span class="q-num">Question 1</span>
+          Why don't you buy more snacking tomatoes, peppers and cucumbers?
+        </div>
+        <div class="q-btn" data-q="q2" onclick="selectQ(this)">
+          <span class="q-num">Question 2</span>
+          Does healthiness determine your snack choices? If no, what does?
+        </div>
+      </div>
+    </div>
+
+    <div class="gen-bar">
+      <button class="btn-gen" id="gbtn" onclick="generate()">Generate Consumer Voice</button>
+    </div>
+
+    <div class="spinner-wrap" id="spin">
+      <div class="spinner"></div>
+      <p id="spin-msg">Finding matching consumers and synthesizing their voices...</p>
+    </div>
+
+    <div class="card" id="empty-state">
+      <div style="text-align:center;padding:2rem 1rem">
+        <svg viewBox="0 0 240 180" xmlns="http://www.w3.org/2000/svg" width="200" height="150" style="display:block;margin:0 auto 1rem">
+          <ellipse cx="120" cy="165" rx="85" ry="9" fill="#e8f5e8"/>
+          <rect x="55" y="60" width="18" height="80" rx="4" fill="#4a9e4a"/>
+          <ellipse cx="64" cy="58" rx="18" ry="28" fill="#5ab85a"/>
+          <ellipse cx="64" cy="45" rx="10" ry="6" fill="#7dd17d"/>
+          <rect x="95" y="75" width="16" height="65" rx="4" fill="#c0392b"/>
+          <circle cx="103" cy="72" r="16" fill="#e74c3c"/>
+          <circle cx="103" cy="62" r="8" fill="#ff6b6b"/>
+          <rect x="135" y="68" width="16" height="72" rx="4" fill="#f39c12"/>
+          <ellipse cx="143" cy="65" rx="16" ry="20" fill="#f1c40f"/>
+          <ellipse cx="143" cy="52" rx="9" ry="5" fill="#f9e07a"/>
+        </svg>
+        <p class="empty-text">Select a consumer profile and a question above, then generate to hear from snacking veg consumers.</p>
+      </div>
+    </div>
+
+    <div class="card" id="out-card" style="display:none;padding:1rem">
+      <div class="meta-bar">
+        <div>
+          <div class="q-label" id="out-q-label"></div>
+          <div class="count-badge" id="out-count"></div>
+          <div class="sample-warning" id="sample-warning"></div>
+        </div>
+        <button class="btn-copy" onclick="copyOutput()">Copy text</button>
+      </div>
+      <div class="persona-row">
+        <div class="av" id="out-av"></div>
+        <div class="persona-info">
+          <h3 id="out-name"></h3>
+          <p id="out-desc"></p>
+        </div>
+      </div>
+      <div class="sentiment-bar" id="sentiment-bar"></div>
+      <div class="response-text" id="out-text"></div>
+    </div>
+
+    <div class="card" id="history-card" style="display:none">
+      <div class="card-title" style="position:relative">
+        Question History
+        <button class="btn-copy" style="float:right;margin-top:-4px" onclick="downloadHistoryPDF()">Download PDF</button>
+      </div>
+      <div id="history-list"></div>
+    </div>
+
+    <div class="footer">Execulytics Consulting &nbsp;|&nbsp; Snacking Veg Experience &nbsp;|&nbsp; Based on 1,810 consumer interviews across Canada and the USA</div>
+  </div>
+</div>
+
+<script>
+const VALID_USER = "Snacking_Veg";
+const VALID_PASS = "Cox_Farm0626";
+let consumerData = null;
+let selectedQ = "q1";
+let selectedCountry = "";
+let questionHistory = [];
+
+const QUESTIONS = {
+  q1: "Why don't you buy more snacking tomatoes, peppers and cucumbers?",
+  q2: "Does healthiness determine your snack choices? If no, what does?"
+};
+
+const CHART_COLORS = ['#2d7a2d','#4a9e4a','#7dd17d','#c8e8c8','#c0392b','#e74c3c','#f39c12','#f1c40f','#3498db','#888'];
+
+const CA_REGIONS = ['Ontario','Québec','West'];
+const US_REGIONS = ['Midwest','South','West'];
+const CA_FORMATS = ['Club','Conventional','Discount','Independent','Mass'];
+const US_FORMATS = ['Club','Discount','National','Other','Regional'];
+
+const NAMES = {
+  "Female_Gen Z":       ["Emma","Olivia","Zoe","Chloe","Ava","Lily","Mia","Sophie"],
+  "Female_Millennial":  ["Sarah","Jennifer","Amanda","Nicole","Rachel","Michelle","Lisa","Stephanie"],
+  "Female_Gen X":       ["Linda","Susan","Karen","Patricia","Catherine","Diane","Carol","Janet"],
+  "Female_Baby Boomer": ["Dorothy","Betty","Helen","Ruth","Frances","Mary","Joan","Gloria"],
+  "Male_Gen Z":         ["Liam","Noah","Ethan","Lucas","Oliver","Jack","Logan","Mason"],
+  "Male_Millennial":    ["James","Michael","David","Daniel","Ryan","Jason","Andrew","Kevin"],
+  "Male_Gen X":         ["Robert","William","Richard","Thomas","Mark","Stephen","Paul","Brian"],
+  "Male_Baby Boomer":   ["Harold","Walter","Frank","Raymond","Gerald","Arthur","Eugene","Howard"]
+};
+
+function getPersonaName(gender, age) {
+  const key = `${gender}_${age}`;
+  const list = NAMES[key] || NAMES["Male_Millennial"];
+  return list[Math.floor(Math.random() * list.length)];
+}
+
+function doLogin() {
+  const u = document.getElementById('lu').value.trim();
+  const p = document.getElementById('lp').value;
+  if(u === VALID_USER && p === VALID_PASS) {
+    document.getElementById('login').classList.remove('active');
+    document.getElementById('app').classList.add('active');
+    document.getElementById('lerr').textContent = '';
+    loadData();
+  } else {
+    document.getElementById('lerr').textContent = 'Invalid username or password.';
+  }
+}
+
+function doLogout() {
+  document.getElementById('app').classList.remove('active');
+  document.getElementById('login').classList.add('active');
+  document.getElementById('lu').value = '';
+  document.getElementById('lp').value = '';
+}
+
+document.addEventListener('keydown', e => {
+  if(e.key === 'Enter' && document.getElementById('login').classList.contains('active')) doLogin();
+});
+
+async function loadData() {
+  try {
+    const res = await fetch('/snacking_data.json');
+    consumerData = await res.json();
+    updateMatchCount();
+  } catch(err) { alert('Could not load consumer data.'); }
+}
+
+function selectCountry(country) {
+  selectedCountry = country;
+  document.querySelectorAll('.country-btn').forEach(b => b.classList.remove('active'));
+  if(country === 'Canada') document.getElementById('btn-canada').classList.add('active');
+  else if(country === 'USA') document.getElementById('btn-usa').classList.add('active');
+  else document.getElementById('btn-both').classList.add('active');
+
+  const regionSel = document.getElementById('f-region');
+  const formatSel = document.getElementById('f-format');
+
+  if(country === '') {
+    regionSel.disabled = true;
+    regionSel.innerHTML = '<option value="" disabled>Select a country first</option>';
+    formatSel.disabled = true;
+    formatSel.innerHTML = '<option value="" disabled>Select a country first</option>';
+  } else {
+    const regions = country === 'Canada' ? CA_REGIONS : US_REGIONS;
+    const formats = country === 'Canada' ? CA_FORMATS : US_FORMATS;
+    regionSel.disabled = false;
+    regionSel.innerHTML = regions.map(r => `<option value="${r}">${r}</option>`).join('');
+    regionSel.size = regions.length;
+    formatSel.disabled = false;
+    formatSel.innerHTML = formats.map(f => `<option value="${f}">${f}</option>`).join('');
+    formatSel.size = formats.length;
+  }
+
+  updateMatchCount();
+}
+
+function clearFilter(id) {
+  const el = document.getElementById(id);
+  if(!el.disabled) Array.from(el.options).forEach(o => o.selected = false);
+  updateMatchCount();
+}
+
+function getSelectedValues(id) {
+  const el = document.getElementById(id);
+  if(el.disabled) return [];
+  return Array.from(el.selectedOptions).map(o => o.value).filter(v => v !== '');
+}
+
+function getFilters() {
+  return {
+    country: selectedCountry,
+    gender: getSelectedValues('f-gender'),
+    age: getSelectedValues('f-age'),
+    income: getSelectedValues('f-income'),
+    region: getSelectedValues('f-region'),
+    format: getSelectedValues('f-format'),
+    freq: getSelectedValues('f-freq'),
+    veg: getSelectedValues('f-veg')
+  };
+}
+
+function filterData(filters) {
+  if(!consumerData) return [];
+  return consumerData.filter(r => {
+    if(filters.country && r.country !== filters.country) return false;
+    if(filters.gender.length && !filters.gender.includes(r.gender)) return false;
+    if(filters.age.length && !filters.age.includes(r.age)) return false;
+    if(filters.income.length && !filters.income.includes(r.income)) return false;
+    if(filters.region.length && !filters.region.includes(r.region)) return false;
+    if(filters.format.length && !filters.format.includes(r.format)) return false;
+    if(filters.freq.length && !filters.freq.includes(r.snacking_freq)) return false;
+    if(filters.veg.length && !filters.veg.includes(r.preferred_veg)) return false;
+    return true;
+  });
+}
+
+document.querySelectorAll('#app select').forEach(s => s.addEventListener('change', updateMatchCount));
+
+function updateMatchCount() {
+  const matches = filterData(getFilters());
+  const el = document.getElementById('match-count');
+  if(!consumerData) return;
+  if(matches.length === 0) {
+    el.textContent = 'No respondents match this combination. Try broadening your filters.';
+    el.style.color = '#c0392b';
+    document.getElementById('charts-card').style.display = 'none';
+  } else {
+    el.textContent = `${matches.length} respondents match this profile`;
+    el.style.color = '#2d7a2d';
+    renderCharts(matches);
+    document.getElementById('charts-card').style.display = 'block';
+  }
+}
+
+function renderDonut(svgId, centerId, legendId, data) {
+  const svg = document.getElementById(svgId);
+  const center = document.getElementById(centerId);
+  const legend = document.getElementById(legendId);
+  if(!svg) return;
+  const total = data.reduce((s,d) => s+d.value, 0);
+  if(total === 0) { svg.innerHTML=''; legend.innerHTML=''; return; }
+  const cx=50,cy=50,r=40,inner=24;
+  let startAngle = -Math.PI/2;
+  let paths = '';
+  data.forEach((seg,i) => {
+    if(seg.value===0) return;
+    const angle=(seg.value/total)*2*Math.PI;
+    const endAngle=startAngle+angle;
+    const x1=cx+r*Math.cos(startAngle),y1=cy+r*Math.sin(startAngle);
+    const x2=cx+r*Math.cos(endAngle),y2=cy+r*Math.sin(endAngle);
+    const ix1=cx+inner*Math.cos(startAngle),iy1=cy+inner*Math.sin(startAngle);
+    const ix2=cx+inner*Math.cos(endAngle),iy2=cy+inner*Math.sin(endAngle);
+    const large=angle>Math.PI?1:0;
+    const pct=Math.round((seg.value/total)*100);
+    paths+=`<path d="M${ix1},${iy1} L${x1},${y1} A${r},${r} 0 ${large},1 ${x2},${y2} L${ix2},${iy2} A${inner},${inner} 0 ${large},0 ${ix1},${iy1} Z" fill="${CHART_COLORS[i%CHART_COLORS.length]}"/>`;
+    startAngle=endAngle;
+  });
+  svg.innerHTML=paths;
+  center.innerHTML=`${total}<br><span style="font-size:9px;color:#aaa">total</span>`;
+  legend.innerHTML=data.filter(d=>d.value>0).map((d,i)=>{
+    const pct=Math.round((d.value/total)*100);
+    return `<div><span class="legend-dot" style="background:${CHART_COLORS[i%CHART_COLORS.length]}"></span>${d.label} ${pct}%</div>`;
+  }).join('');
+}
+
+function renderCharts(matches) {
+  const vegOrder=['Mini Cucumbers','Snacking Tomatoes','Mini Seedless Peppers','None of the above'];
+  const vegData=vegOrder.map(v=>({label:v.replace('Mini Seedless ','').replace('Snacking ',''),value:matches.filter(r=>r.preferred_veg===v).length}));
+  renderDonut('chart-veg','center-veg','legend-veg',vegData);
+
+  const formats={};
+  matches.forEach(r=>{if(r.format)formats[r.format]=(formats[r.format]||0)+1;});
+  renderDonut('chart-format','center-format','legend-format',Object.entries(formats).map(([k,v])=>({label:k,value:v})));
+
+  const freqOrder=['Multiple per day','Once per day','Some days','Rarely','Only with guests','Never'];
+  const freqData=freqOrder.map(f=>({label:f,value:matches.filter(r=>r.snacking_freq===f).length}));
+  renderDonut('chart-freq','center-freq','legend-freq',freqData.filter(d=>d.value>0));
+
+  const ageOrder=['Gen Z','Millennial','Gen X','Baby Boomer'];
+  const ageData=ageOrder.map(a=>({label:a,value:matches.filter(r=>r.age===a).length}));
+  renderDonut('chart-age','center-age','legend-age',ageData);
+}
+
+function selectQ(el) {
+  document.querySelectorAll('.q-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  selectedQ=el.dataset.q;
+}
+
+const POSITIVE_WORDS=['enjoy','love','great','good','fresh','healthy','tasty','convenient','easy','crisp','delicious','perfect','excellent','satisfied','happy','wonderful','nice'];
+const NEGATIVE_WORDS=['expensive','price','costly','spoil','short shelf','bland','boring','unavailable','hard to find','not fresh','mushy','soggy','bad','poor','disappointed','inconvenient','never'];
+
+function analyzeSentiment(responses) {
+  let pos=0,neg=0,mixed=0;
+  responses.forEach(r=>{
+    const text=String(r).toLowerCase();
+    const hasPos=POSITIVE_WORDS.some(w=>text.includes(w));
+    const hasNeg=NEGATIVE_WORDS.some(w=>text.includes(w));
+    if(hasPos&&hasNeg)mixed++;
+    else if(hasPos)pos++;
+    else if(hasNeg)neg++;
+    else mixed++;
+  });
+  const total=responses.length;
+  let positive=Math.round((pos/total)*100);
+  let mixedPct=Math.round((mixed/total)*100);
+  let negative=Math.round((neg/total)*100);
+  const sum=positive+mixedPct+negative;
+  if(sum!==100)positive+=(100-sum);
+  return{positive,mixed:mixedPct,negative};
+}
+
+function renderSentimentBar(s) {
+  const segs=[];
+  if(s.positive>0)segs.push(`<div class="sentiment-seg sentiment-positive" style="width:${s.positive}%">${s.positive}%</div>`);
+  if(s.mixed>0)segs.push(`<div class="sentiment-seg sentiment-mixed" style="width:${s.mixed}%">${s.mixed}%</div>`);
+  if(s.negative>0)segs.push(`<div class="sentiment-seg sentiment-negative" style="width:${s.negative}%">${s.negative}%</div>`);
+  return `<div class="sentiment-label">Sentiment breakdown</div>
+    <div class="sentiment-track">${segs.join('')}</div>
+    <div class="sentiment-legend">
+      <span><span class="sentiment-dot" style="background:#5a9367"></span>Positive</span>
+      <span><span class="sentiment-dot" style="background:#d9a441"></span>Mixed</span>
+      <span><span class="sentiment-dot" style="background:#c0556e"></span>Negative</span>
+    </div>`;
+}
+
+const AGE_ORDER=['Gen Z','Millennial','Gen X','Baby Boomer'];
+const INCOME_ORDER=['<$50K','$50K-$99K','$100K-$149K','>$150K'];
+const AGE_LABELS=['Gen Z','Millennial','Gen X','Baby Boomer'];
+const INCOME_LABELS=['Under $50K','$50K–$99K','$100K–$149K','Over $150K'];
+
+function describeList(arr,order,labels) {
+  if(arr.length===0)return null;
+  if(arr.length===1)return labels?labels[order.indexOf(arr[0])]||arr[0]:arr[0];
+  const sorted=[...arr].sort((a,b)=>order.indexOf(a)-order.indexOf(b));
+  const indices=sorted.map(a=>order.indexOf(a));
+  const consecutive=indices.every((v,i)=>i===0||v===indices[i-1]+1);
+  if(consecutive&&labels)return`${labels[indices[0]]} to ${labels[indices[indices.length-1]]}`;
+  return sorted.map((v,i)=>labels?labels[order.indexOf(v)]||v:v).join(' or ');
+}
+
+async function generate() {
+  const filters=getFilters();
+  const matches=filterData(filters);
+  if(matches.length===0){alert('No respondents match this combination.');return;}
+
+  document.getElementById('gbtn').disabled=true;
+  document.getElementById('spin').style.display='block';
+  document.getElementById('out-card').style.display='none';
+  document.getElementById('empty-state').style.display='none';
+
+  const gender=filters.gender.length>0?filters.gender[Math.floor(Math.random()*filters.gender.length)]:'Male';
+  const age=filters.age.length>0?filters.age[Math.floor(Math.random()*filters.age.length)]:'Millennial';
+  const personaName=getPersonaName(gender,age);
+  const initials=personaName.slice(0,2).toUpperCase();
+
+  const parts=[];
+  if(filters.country)parts.push(filters.country);
+  if(filters.gender.length)parts.push(filters.gender.join(' or '));
+  const ageDesc=describeList(filters.age,AGE_ORDER,AGE_LABELS);
+  if(ageDesc)parts.push(ageDesc);
+  const incDesc=describeList(filters.income,INCOME_ORDER,INCOME_LABELS);
+  if(incDesc)parts.push(incDesc);
+  if(filters.region.length)parts.push(filters.region.join(' or '));
+  if(filters.veg.length)parts.push(filters.veg.join(' or ')+' shopper');
+  const demoDesc=parts.length>0?parts.join(' · '):'All snacking veg consumers';
+
+  const shuffled=[...matches].sort(()=>Math.random()-0.5);
+  const sample=shuffled.slice(0,150);
+  const responses=sample.map(r=>r[selectedQ]).filter(Boolean);
+
+  if(responses.length===0){
+    alert('No responses found for this combination.');
+    document.getElementById('gbtn').disabled=false;
+    document.getElementById('spin').style.display='none';
+    return;
+  }
+
+  const sentiment=analyzeSentiment(responses);
+  const warn=document.getElementById('sample-warning');
+  if(responses.length<5){
+    warn.textContent=`Small sample (${responses.length} response${responses.length!==1?'s':''}) — may not be representative`;
+    warn.style.display='inline-block';
+  } else {
+    warn.style.display='none';
+  }
+
+  const spinMsgs=['Reading consumer responses...','Finding the common threads...','Synthesizing the consumer voice...','Almost ready...'];
+  let msgIdx=0;
+  const spinInterval=setInterval(()=>{
+    msgIdx=(msgIdx+1)%spinMsgs.length;
+    document.getElementById('spin-msg').textContent=spinMsgs[msgIdx];
+  },2000);
+
+  try {
+    const res=await fetch('/api/snacking-voice',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({persona_name:personaName,demo_desc:demoDesc,question:QUESTIONS[selectedQ],responses})
+    });
+    const data=await res.json();
+    clearInterval(spinInterval);
+    if(data.error)throw new Error(data.error);
+
+    document.getElementById('out-av').textContent=initials;
+    document.getElementById('out-name').textContent=`${personaName} — ${demoDesc}`;
+    document.getElementById('out-desc').textContent=`Synthesized from ${responses.length} matching consumer responses`;
+    document.getElementById('out-q-label').textContent=QUESTIONS[selectedQ];
+    document.getElementById('out-count').textContent='';
+    document.getElementById('sentiment-bar').innerHTML=renderSentimentBar(sentiment);
+
+    const paragraphs=data.reply.split('\n').filter(p=>p.trim());
+    document.getElementById('out-text').innerHTML=paragraphs.map(p=>`<p>${p}</p>`).join('');
+    document.getElementById('out-card').style.display='block';
+    document.getElementById('out-card').scrollIntoView({behavior:'smooth'});
+
+    questionHistory.unshift({
+      name:personaName,desc:demoDesc,question:QUESTIONS[selectedQ],
+      text:data.reply,sentiment,sampleCount:responses.length,
+      time:new Date().toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'})
+    });
+    renderHistory();
+  } catch(err) {
+    clearInterval(spinInterval);
+    alert('Something went wrong: '+err.message);
+  }
+  document.getElementById('spin').style.display='none';
+  document.getElementById('gbtn').disabled=false;
+}
+
+function renderHistory() {
+  const card=document.getElementById('history-card');
+  const list=document.getElementById('history-list');
+  if(questionHistory.length===0){card.style.display='none';return;}
+  card.style.display='block';
+  list.innerHTML=questionHistory.map((h,i)=>`
+    <div class="history-item" id="hist-${i}">
+      <div class="h-top"><span class="h-name">${h.name} — ${h.desc}</span><span class="h-time">${h.time}</span></div>
+      <div class="h-q">${h.question} · ${h.sentiment.positive}% positive / ${h.sentiment.mixed}% mixed / ${h.sentiment.negative}% negative</div>
+      <div class="h-text">${h.text.split('\n').filter(p=>p.trim()).map(p=>`<p style="margin-bottom:0.5rem">${p}</p>`).join('')}</div>
+      <div class="h-toggle" onclick="toggleHistoryItem(${i})">Show response</div>
+    </div>`).join('');
+}
+
+function toggleHistoryItem(i) {
+  const item=document.getElementById(`hist-${i}`);
+  const toggle=item.querySelector('.h-toggle');
+  item.classList.toggle('expanded');
+  toggle.textContent=item.classList.contains('expanded')?'Hide response':'Show response';
+}
+
+function downloadHistoryPDF() {
+  if(questionHistory.length===0){alert('No history to download yet.');return;}
+  const{jsPDF}=window.jspdf;
+  const doc=new jsPDF({unit:'pt',format:'letter'});
+  const pw=doc.internal.pageSize.getWidth();
+  const margin=50,mw=pw-margin*2;
+  let y=60;
+  doc.setFont('helvetica','bold');doc.setFontSize(16);doc.setTextColor(45,122,45);
+  doc.text('Snacking Veg Experience — Question History',margin,y);y+=18;
+  doc.setFontSize(9);doc.setTextColor(150,150,150);
+  doc.text(`Generated ${new Date().toLocaleString('en-CA')}`,margin,y);y+=30;
+  questionHistory.slice().reverse().forEach((h,idx)=>{
+    if(y>700){doc.addPage();y=60;}
+    doc.setFont('helvetica','bold');doc.setFontSize(12);doc.setTextColor(45,122,45);
+    doc.text(`${h.name} — ${h.desc}`,margin,y);y+=16;
+    doc.setFont('helvetica','italic');doc.setFontSize(10);doc.setTextColor(100,100,100);
+    const qLines=doc.splitTextToSize(h.question,mw);
+    doc.text(qLines,margin,y);y+=qLines.length*13+4;
+    doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(100,130,100);
+    doc.text(`Sentiment: ${h.sentiment.positive}% positive, ${h.sentiment.mixed}% mixed, ${h.sentiment.negative}% negative · ${h.time}`,margin,y);y+=18;
+    doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(30,30,30);
+    const bodyLines=doc.splitTextToSize(h.text,mw);
+    bodyLines.forEach(line=>{if(y>740){doc.addPage();y=60;}doc.text(line,margin,y);y+=13;});
+    y+=16;
+    if(idx<questionHistory.length-1){doc.setDrawColor(200,230,200);doc.line(margin,y-8,pw-margin,y-8);y+=8;}
+  });
+  doc.save('snacking-veg-history.pdf');
+}
+
+function copyOutput() {
+  const name=document.getElementById('out-name').textContent;
+  const q=document.getElementById('out-q-label').textContent;
+  const text=document.getElementById('out-text').innerText;
+  navigator.clipboard.writeText(`${name}\n${q}\n\n${text}`).then(()=>{
+    const b=document.querySelector('.btn-copy');
+    b.textContent='Copied!';
+    setTimeout(()=>b.textContent='Copy text',2000);
+  });
+}
+</script>
+</body>
+</html>
