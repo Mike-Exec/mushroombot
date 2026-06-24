@@ -479,15 +479,10 @@ document.querySelectorAll('#app select').forEach(s => s.addEventListener('change
 
 function updateMatchCount() {
   const matches = filterData(getFilters());
-  const el = document.getElementById('match-count');
   if(!consumerData) return;
   if(matches.length === 0) {
-    el.textContent = 'No respondents match this combination. Try broadening your filters.';
-    el.style.color = '#c0392b';
     document.getElementById('charts-card').style.display = 'none';
   } else {
-    el.textContent = `${matches.length} respondents match this profile`;
-    el.style.color = '#2d7a2d';
     renderCharts(matches);
     document.getElementById('charts-card').style.display = 'block';
   }
