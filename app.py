@@ -227,6 +227,59 @@ Now write your 220-260 word seasonal comparison as {persona_name}:"""
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route("/api/pear-demo-compare", methods=["POST"])
+def pear_demo_compare_api():
+    data = request.json
+    persona_name = data.get("persona_name", "Sarah")
+    desc_a = data.get("desc_a", "Profile A")
+    desc_b = data.get("desc_b", "Profile B")
+    question = data.get("question", "")
+    responses_a = data.get("responses_a", [])
+    responses_b = data.get("responses_b", [])
+
+    if not responses_a and not responses_b:
+        return jsonify({"error": "No responses provided"}), 400
+
+    prompt = f"""You are {persona_name}, a Canadian pear consumer researcher who has studied two distinct consumer groups on this topic: "{question}"
+
+Profile A: {desc_a}
+Profile B: {desc_b}
+
+Below are real consumer responses from each group. Write a single first-person narrative of 220-260 words that COMPARES the two profiles — what is similar between them, what is meaningfully different, which group is more positive or negative and why, and what that signals for the pear category.
+
+RULES:
+- Speak entirely in first person as {persona_name}
+- Ground everything in the actual responses — do not invent opinions
+- Directly compare and contrast the two profiles — this is the whole point
+- Be specific about what drives any differences in sentiment or themes
+- If one profile is clearly more positive or negative, say so directly
+- Sound like a real person, warm and conversational, not like a report
+- Write flowing prose only — no bullet points, no headers
+- Do not say "many respondents said" — speak as yourself
+- If responses are mixed or negative for either profile, reflect that proportionally
+
+PROFILE A RESPONSES — {desc_a} ({len(responses_a)} responses):
+{chr(10).join([f'[{i+1}] {r}' for i, r in enumerate(responses_a)])}
+
+PROFILE B RESPONSES — {desc_b} ({len(responses_b)} responses):
+{chr(10).join([f'[{i+1}] {r}' for i, r in enumerate(responses_b)])}
+
+Now write your 220-260 word demographic comparison as {persona_name}:"""
+
+    try:
+        response = client.messages.create(
+            model="claude-sonnet-4-5",
+            max_tokens=700,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        reply = ""
+        for block in response.content:
+            if block.type == "text":
+                reply += block.text
+        return jsonify({"reply": reply})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.route("/api/consumer-voice", methods=["POST"])
 def consumer_voice_api():
     data = request.json
