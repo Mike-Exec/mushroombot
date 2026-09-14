@@ -176,6 +176,57 @@ if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
 
+@app.route("/api/pear-compare", methods=["POST"])
+def pear_compare_api():
+    data = request.json
+    persona_name = data.get("persona_name", "Sarah")
+    demo_desc = data.get("demo_desc", "Canadian pear consumer")
+    question = data.get("question", "")
+    arg_responses = data.get("arg_responses", [])
+    cal_responses = data.get("cal_responses", [])
+
+    if not arg_responses and not cal_responses:
+        return jsonify({"error": "No responses provided"}), 400
+
+    prompt = f"""You are {persona_name}, a Canadian pear consumer with the following profile: {demo_desc}.
+
+You have been asked about two different pear seasons — the Argentina season and the California season — on this topic: "{question}"
+
+Below are real consumer responses from each season. Your job is to write a single first-person narrative of 220-260 words that COMPARES the two seasons — what was similar, what was different, which season performed better on this dimension and why, and what that means for the pear category overall.
+
+RULES:
+- Speak entirely in first person as {persona_name}
+- Ground everything in the actual responses provided — do not invent opinions
+- Directly compare and contrast the two seasons — this is the whole point
+- Note where sentiment differed between seasons and be specific about what drove those differences
+- If one season was clearly better or worse, say so directly — do not soften or hedge
+- Sound like a real person who has experienced both seasons, warm and conversational
+- Write flowing prose only — no bullet points, no headers
+- Do not say "many respondents said" — speak as yourself
+- If responses are mixed or negative for either season, reflect that proportionally
+
+ARGENTINA SEASON RESPONSES ({len(arg_responses)} responses):
+{chr(10).join([f'[{i+1}] {r}' for i, r in enumerate(arg_responses)])}
+
+CALIFORNIA SEASON RESPONSES ({len(cal_responses)} responses):
+{chr(10).join([f'[{i+1}] {r}' for i, r in enumerate(cal_responses)])}
+
+Now write your 220-260 word seasonal comparison as {persona_name}:"""
+
+    try:
+        response = client.messages.create(
+            model="claude-sonnet-4-5",
+            max_tokens=700,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        reply = ""
+        for block in response.content:
+            if block.type == "text":
+                reply += block.text
+        return jsonify({"reply": reply})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.route("/api/consumer-voice", methods=["POST"])
 def consumer_voice_api():
     data = request.json
