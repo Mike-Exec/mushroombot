@@ -28,8 +28,19 @@ body{font-family:Arial,sans-serif;background:#f5f5f0;color:#1b1b1b;min-height:10
 .app-body{max-width:980px;margin:0 auto;padding:1.5rem}
 .card{background:#fff;border:1px solid #e8e0e4;border-radius:10px;padding:1.25rem;margin-bottom:1.25rem;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
 .card-title{font-size:11px;font-weight:bold;color:#7d3c64;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid #f3e6ee}
-.filter-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
-.filter-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+
+/* SEASON SELECTOR */
+.season-row{display:flex;gap:0.75rem;margin-bottom:1rem}
+.season-btn{flex:1;padding:0.7rem;border:2px solid #ddd;border-radius:8px;font-size:13px;cursor:pointer;background:#fafaf7;color:#4a4a4a;text-align:center;font-weight:bold;transition:all 0.15s;font-family:Arial,sans-serif;line-height:1.3}
+.season-btn:hover{border-color:#a8527a;color:#7d3c64}
+.season-btn.active-arg{background:#7d3c64;color:#fff;border-color:#7d3c64}
+.season-btn.active-cal{background:#c17a2d;color:#fff;border-color:#c17a2d}
+.season-btn.active-compare{background:linear-gradient(135deg,#7d3c64 50%,#c17a2d 50%);color:#fff;border-color:#7d3c64}
+.season-label{font-size:10px;opacity:0.75;display:block;font-weight:normal}
+
+/* FILTERS */
+.filter-top-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.filter-row-2{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1rem}
 .fg{display:flex;flex-direction:column;gap:5px}
 .fg label{font-size:11px;font-weight:bold;color:#4a4a4a;text-transform:uppercase;letter-spacing:0.05em}
 .fg label .hint{text-transform:none;font-weight:normal;color:#aaa;font-size:10px;letter-spacing:0}
@@ -40,22 +51,35 @@ select[multiple] option{padding:0.35rem 0.6rem;border-radius:4px}
 select[multiple] option:checked{background:#7d3c64;color:#fff}
 .clear-btn{margin-top:4px;padding:3px 10px;font-size:11px;border:1px solid #ddd;border-radius:6px;background:#fafaf7;color:#888;cursor:pointer;align-self:flex-start;font-family:Arial,sans-serif;transition:all 0.15s}
 .clear-btn:hover{border-color:#a8527a;color:#7d3c64}
-.match-info{margin-top:0.75rem;font-size:12px;color:#767676;font-family:Arial,sans-serif}
+.clear-all-btn{padding:5px 14px;font-size:12px;border:1px solid #a8527a;border-radius:6px;background:#fdf6fa;color:#7d3c64;cursor:pointer;font-family:Arial,sans-serif;font-weight:bold;transition:all 0.15s}
+.clear-all-btn:hover{background:#7d3c64;color:#fff}
 
-/* FILTER GRID */
-.filter-top-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+/* SINGLE SEASON CHARTS */
 .charts-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
-.chart-title-sm{font-size:10px;font-weight:bold;color:#7d3c64;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.4rem;text-align:center}
-
-/* CHARTS */
-.charts-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1rem}
 .chart-wrap{text-align:center}
-.chart-title{font-size:11px;font-weight:bold;color:#7d3c64;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem}
+.chart-title-sm{font-size:10px;font-weight:bold;color:#7d3c64;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.4rem}
 .donut-container{position:relative;width:80px;height:80px;margin:0 auto 0.4rem}
 .donut-svg{width:100%;height:100%}
 .donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:11px;font-weight:bold;color:#4a4a4a;text-align:center;line-height:1.2;pointer-events:none}
 .chart-legend{font-size:10px;color:#666;font-family:Arial,sans-serif;text-align:left;line-height:1.8}
-.legend-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;flex-shrink:0}
+.legend-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}
+
+/* COMPARE CHARTS */
+.compare-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.compare-chart-wrap{text-align:center}
+.compare-chart-title{font-size:10px;font-weight:bold;color:#7d3c64;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem}
+.compare-donuts{display:flex;gap:0.5rem;justify-content:center;align-items:flex-start}
+.compare-donut-col{text-align:center}
+.compare-season-label{font-size:9px;font-weight:bold;margin-bottom:3px;font-family:Arial,sans-serif}
+.arg-label{color:#7d3c64}
+.cal-label{color:#c17a2d}
+.donut-container-sm{position:relative;width:60px;height:60px;margin:0 auto 0.3rem}
+.change-col{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2px;padding:0 2px;min-width:28px}
+.change-item{font-size:9px;font-family:Arial,sans-serif;font-weight:bold;line-height:1.6}
+.change-pos{color:#2d7a2d}
+.change-neg{color:#c0392b}
+.change-neu{color:#888}
+.compare-legend{font-size:9px;color:#666;font-family:Arial,sans-serif;text-align:left;line-height:1.7;margin-top:4px}
 
 /* QUESTIONS */
 .q-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem}
@@ -87,6 +111,8 @@ select[multiple] option:checked{background:#7d3c64;color:#fff}
 .persona-info h3{font-size:0.9rem;color:#7d3c64;margin-bottom:1px;font-family:Georgia,serif}
 .persona-info p{font-size:11px;color:#767676;line-height:1.4}
 .q-label{display:inline-block;background:#7d3c64;color:#fff;font-size:10px;padding:2px 8px;border-radius:20px;font-family:Arial,sans-serif;font-weight:bold;margin-bottom:0.3rem}
+.compare-badge{display:inline-block;background:linear-gradient(135deg,#7d3c64 50%,#c17a2d 50%);color:#fff;font-size:10px;padding:2px 8px;border-radius:20px;font-family:Arial,sans-serif;font-weight:bold;margin-bottom:0.3rem}
+.sentiment-bar{margin-bottom:0.75rem}
 .sentiment-label{font-size:10px;font-weight:bold;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;font-family:Arial,sans-serif}
 .sentiment-track{display:flex;height:18px;border-radius:4px;overflow:hidden;border:1px solid #e8e0e4}
 .sentiment-seg{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:bold;color:#fff;font-family:Arial,sans-serif}
@@ -96,11 +122,9 @@ select[multiple] option:checked{background:#7d3c64;color:#fff}
 .sentiment-legend{display:flex;gap:0.75rem;margin-top:4px;font-size:10px;color:#aaa;font-family:Arial,sans-serif}
 .sentiment-legend span{display:inline-flex;align-items:center;gap:4px}
 .sentiment-dot{width:9px;height:9px;border-radius:50%;display:inline-block}
-.sentiment-bar{margin-bottom:0.75rem}
 .response-text{font-size:14px;line-height:1.75;color:#1b1b1b;font-family:Georgia,serif}
 .response-text p{margin-bottom:0.75rem}
 .meta-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;flex-wrap:wrap;gap:0.4rem}
-.count-badge{font-size:11px;color:#aaa;font-family:Arial,sans-serif;font-style:italic}
 .btn-copy{padding:0.4rem 0.9rem;background:#fafaf7;border:1px solid #ddd;border-radius:6px;font-size:12px;cursor:pointer;color:#4a4a4a;font-family:Arial,sans-serif}
 .btn-copy:hover{border-color:#7d3c64;color:#7d3c64}
 
@@ -115,7 +139,7 @@ select[multiple] option:checked{background:#7d3c64;color:#fff}
 .history-item.expanded .h-text{max-height:1000px}
 .history-item .h-toggle{font-size:11px;color:#a8527a;cursor:pointer;font-weight:bold}
 .footer{font-size:11px;color:#aaa;text-align:center;margin-top:1.5rem;padding-top:1rem;border-top:1px solid #eee}
-@media(max-width:700px){.filter-top-grid{grid-template-columns:1fr 1fr}.charts-grid-4{grid-template-columns:1fr 1fr}.q-grid{grid-template-columns:1fr}.app-body{padding:1rem}}
+@media(max-width:700px){.filter-top-grid,.filter-row-2,.q-grid,.charts-grid-4,.compare-grid{grid-template-columns:1fr 1fr}.app-body{padding:1rem}.season-row{flex-direction:column}}
 </style>
 </head>
 <body>
@@ -142,9 +166,27 @@ select[multiple] option:checked{background:#7d3c64;color:#fff}
   </div>
   <div class="app-body">
 
-    <!-- FILTERS TOP GRID -->
+    <!-- FILTERS -->
     <div class="card">
-      <div class="card-title">Select Consumer Profile</div>
+      <div class="card-title">Select Season &amp; Consumer Profile</div>
+
+      <!-- SEASON SELECTOR -->
+      <div class="season-row">
+        <div class="season-btn" id="btn-arg" onclick="selectSeason('Argentina')">
+          🇦🇷 Argentina
+          <span class="season-label">Spring / Fall season</span>
+        </div>
+        <div class="season-btn" id="btn-cal" onclick="selectSeason('California')">
+          🇺🇸 California
+          <span class="season-label">Summer season</span>
+        </div>
+        <div class="season-btn" id="btn-compare" onclick="selectSeason('Compare')">
+          ⚖️ Compare Seasons
+          <span class="season-label">Argentina vs California</span>
+        </div>
+      </div>
+
+      <!-- DEMOGRAPHIC FILTERS -->
       <div class="filter-top-grid">
         <div class="fg">
           <label>Gender <span class="hint">— leave blank to include all</span></label>
@@ -174,6 +216,8 @@ select[multiple] option:checked{background:#7d3c64;color:#fff}
           </select>
           <button type="button" class="clear-btn" onclick="clearFilter('f-income')">Clear</button>
         </div>
+      </div>
+      <div class="filter-row-2" style="margin-top:1rem">
         <div class="fg">
           <label>Region <span class="hint">— leave blank to include all</span></label>
           <select id="f-region" multiple size="4">
@@ -206,41 +250,107 @@ select[multiple] option:checked{background:#7d3c64;color:#fff}
           <button type="button" class="clear-btn" onclick="clearFilter('f-purchased')">Clear</button>
         </div>
       </div>
-      <div class="match-info" id="match-count" style="margin-top:0.75rem">Select filters to see matching respondents</div>
-      <div style="font-size:10px;color:#bbb;font-family:Arial,sans-serif;margin-top:3px">Hold Ctrl (Windows) or Cmd (Mac) to select multiple. Leave blank to include all.</div>
+      <div style="margin-top:0.75rem">
+        <button type="button" class="clear-all-btn" onclick="clearAllFilters()">Clear All Filters</button>
+        <span style="font-size:10px;color:#bbb;font-family:Arial,sans-serif;margin-left:0.75rem">Hold Ctrl (Windows) or Cmd (Mac) to select multiple. Leave blank to include all.</span>
+      </div>
     </div>
 
-    <!-- CHARTS BELOW FILTERS -->
-    <div class="card" id="charts-card" style="display:none">
-      <div class="card-title">Profile Snapshot — Matched Consumers</div>
-      <div id="charts-empty" style="display:none"></div>
-      <div id="charts-content">
-        <div class="charts-grid-4">
-          <div class="chart-wrap">
-            <div class="chart-title-sm">Varieties</div>
-            <div class="donut-container"><svg class="donut-svg" id="chart-varieties" viewBox="0 0 100 100"></svg><div class="donut-center" id="center-varieties"></div></div>
-            <div class="chart-legend" id="legend-varieties"></div>
-          </div>
-          <div class="chart-wrap">
-            <div class="chart-title-sm">Format</div>
-            <div class="donut-container"><svg class="donut-svg" id="chart-format" viewBox="0 0 100 100"></svg><div class="donut-center" id="center-format"></div></div>
-            <div class="chart-legend" id="legend-format"></div>
-          </div>
-          <div class="chart-wrap">
-            <div class="chart-title-sm">Retailer</div>
-            <div class="donut-container"><svg class="donut-svg" id="chart-retailer" viewBox="0 0 100 100"></svg><div class="donut-center" id="center-retailer"></div></div>
-            <div class="chart-legend" id="legend-retailer"></div>
-          </div>
-          <div class="chart-wrap">
-            <div class="chart-title-sm">Purchases</div>
-            <div class="donut-container"><svg class="donut-svg" id="chart-freq" viewBox="0 0 100 100"></svg><div class="donut-center" id="center-freq"></div></div>
-            <div class="chart-legend" id="legend-freq"></div>
-          </div>
+    <!-- SINGLE SEASON CHARTS -->
+    <div class="card" id="charts-single" style="display:none">
+      <div class="card-title" id="charts-single-title">Profile Snapshot</div>
+      <div class="charts-grid-4">
+        <div class="chart-wrap">
+          <div class="chart-title-sm">Pear Varieties</div>
+          <div class="donut-container"><svg class="donut-svg" id="chart-varieties" viewBox="0 0 100 100"></svg><div class="donut-center" id="center-varieties"></div></div>
+          <div class="chart-legend" id="legend-varieties"></div>
+        </div>
+        <div class="chart-wrap">
+          <div class="chart-title-sm">Retail Format</div>
+          <div class="donut-container"><svg class="donut-svg" id="chart-format" viewBox="0 0 100 100"></svg><div class="donut-center" id="center-format"></div></div>
+          <div class="chart-legend" id="legend-format"></div>
+        </div>
+        <div class="chart-wrap">
+          <div class="chart-title-sm">Retailer</div>
+          <div class="donut-container"><svg class="donut-svg" id="chart-retailer" viewBox="0 0 100 100"></svg><div class="donut-center" id="center-retailer"></div></div>
+          <div class="chart-legend" id="legend-retailer"></div>
+        </div>
+        <div class="chart-wrap">
+          <div class="chart-title-sm">Purchases</div>
+          <div class="donut-container"><svg class="donut-svg" id="chart-freq" viewBox="0 0 100 100"></svg><div class="donut-center" id="center-freq"></div></div>
+          <div class="chart-legend" id="legend-freq"></div>
         </div>
       </div>
     </div>
 
-    <!-- QUESTION SELECTION -->
+    <!-- COMPARE CHARTS -->
+    <div class="card" id="charts-compare" style="display:none">
+      <div class="card-title">Season Comparison — Profile Snapshot <span style="font-size:10px;font-weight:normal;color:#7d3c64">🟣 Argentina &nbsp; 🟠 California &nbsp; % = change Cal vs Arg</span></div>
+      <div class="compare-grid">
+        <div class="compare-chart-wrap">
+          <div class="compare-chart-title">Pear Varieties</div>
+          <div class="compare-donuts">
+            <div class="compare-donut-col">
+              <div class="compare-season-label arg-label">ARG</div>
+              <div class="donut-container-sm"><svg class="donut-svg" id="cmp-varieties-arg" viewBox="0 0 100 100"></svg></div>
+            </div>
+            <div class="change-col" id="cmp-varieties-change"></div>
+            <div class="compare-donut-col">
+              <div class="compare-season-label cal-label">CAL</div>
+              <div class="donut-container-sm"><svg class="donut-svg" id="cmp-varieties-cal" viewBox="0 0 100 100"></svg></div>
+            </div>
+          </div>
+          <div class="compare-legend" id="cmp-varieties-legend"></div>
+        </div>
+        <div class="compare-chart-wrap">
+          <div class="compare-chart-title">Retail Format</div>
+          <div class="compare-donuts">
+            <div class="compare-donut-col">
+              <div class="compare-season-label arg-label">ARG</div>
+              <div class="donut-container-sm"><svg class="donut-svg" id="cmp-format-arg" viewBox="0 0 100 100"></svg></div>
+            </div>
+            <div class="change-col" id="cmp-format-change"></div>
+            <div class="compare-donut-col">
+              <div class="compare-season-label cal-label">CAL</div>
+              <div class="donut-container-sm"><svg class="donut-svg" id="cmp-format-cal" viewBox="0 0 100 100"></svg></div>
+            </div>
+          </div>
+          <div class="compare-legend" id="cmp-format-legend"></div>
+        </div>
+        <div class="compare-chart-wrap">
+          <div class="compare-chart-title">Retailer</div>
+          <div class="compare-donuts">
+            <div class="compare-donut-col">
+              <div class="compare-season-label arg-label">ARG</div>
+              <div class="donut-container-sm"><svg class="donut-svg" id="cmp-retailer-arg" viewBox="0 0 100 100"></svg></div>
+            </div>
+            <div class="change-col" id="cmp-retailer-change"></div>
+            <div class="compare-donut-col">
+              <div class="compare-season-label cal-label">CAL</div>
+              <div class="donut-container-sm"><svg class="donut-svg" id="cmp-retailer-cal" viewBox="0 0 100 100"></svg></div>
+            </div>
+          </div>
+          <div class="compare-legend" id="cmp-retailer-legend"></div>
+        </div>
+        <div class="compare-chart-wrap">
+          <div class="compare-chart-title">Purchases</div>
+          <div class="compare-donuts">
+            <div class="compare-donut-col">
+              <div class="compare-season-label arg-label">ARG</div>
+              <div class="donut-container-sm"><svg class="donut-svg" id="cmp-freq-arg" viewBox="0 0 100 100"></svg></div>
+            </div>
+            <div class="change-col" id="cmp-freq-change"></div>
+            <div class="compare-donut-col">
+              <div class="compare-season-label cal-label">CAL</div>
+              <div class="donut-container-sm"><svg class="donut-svg" id="cmp-freq-cal" viewBox="0 0 100 100"></svg></div>
+            </div>
+          </div>
+          <div class="compare-legend" id="cmp-freq-legend"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUESTIONS -->
     <div class="card">
       <div class="card-title">Select a question</div>
       <div class="q-grid">
@@ -268,7 +378,6 @@ select[multiple] option:checked{background:#7d3c64;color:#fff}
       <p id="spin-msg">Finding matching consumers and synthesizing their voices...</p>
     </div>
 
-    <!-- EMPTY STATE -->
     <div class="card" id="empty-state">
       <div style="text-align:center;padding:2rem 1rem">
         <svg viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg" width="220" height="180" style="display:block;margin:0 auto 1rem">
@@ -286,16 +395,14 @@ select[multiple] option:checked{background:#7d3c64;color:#fff}
             <circle cx="35" cy="58" r="3" fill="#c98a5e"/>
           </g>
         </svg>
-        <p class="empty-text">Select a consumer profile and a question above, then generate to hear directly from Canadian pear shoppers.</p>
+        <p class="empty-text">Select a season, consumer profile and a question above, then generate to hear from Canadian pear shoppers.</p>
       </div>
     </div>
 
-    <!-- OUTPUT -->
     <div class="card" id="out-card" style="display:none;padding:1rem">
       <div class="meta-bar">
         <div>
-          <div class="q-label" id="out-q-label"></div>
-          <div class="count-badge" id="out-count"></div>
+          <div id="out-q-label"></div>
           <div class="sample-warning" id="sample-warning"></div>
         </div>
         <button class="btn-copy" onclick="copyOutput()">Copy text</button>
@@ -311,7 +418,6 @@ select[multiple] option:checked{background:#7d3c64;color:#fff}
       <div class="response-text" id="out-text"></div>
     </div>
 
-    <!-- HISTORY -->
     <div class="card" id="history-card" style="display:none">
       <div class="card-title" style="position:relative">
         Question History
@@ -320,7 +426,7 @@ select[multiple] option:checked{background:#7d3c64;color:#fff}
       <div id="history-list"></div>
     </div>
 
-    <div class="footer">Execulytics Consulting &nbsp;|&nbsp; The Pear Experience &nbsp;|&nbsp; Based on 316 Canadian pear consumer interviews</div>
+    <div class="footer">Execulytics Consulting &nbsp;|&nbsp; The Pear Experience &nbsp;|&nbsp; Based on 540 Canadian pear consumer interviews across two seasons</div>
   </div>
 </div>
 
@@ -329,6 +435,7 @@ const VALID_USER = "Argentine_Pears";
 const VALID_PASS = "Cali_Pears2026";
 let consumerData = null;
 let selectedQ = "q1";
+let selectedSeason = "";
 let questionHistory = [];
 
 const QUESTIONS = {
@@ -337,17 +444,19 @@ const QUESTIONS = {
   q3: "Taste and texture of your most recent pear experience"
 };
 
-const CHART_COLORS = ['#7d3c64','#a8527a','#c97a9a','#e3a8c0','#5a9367','#8fbf7a','#d9a441','#4a7fa8','#888'];
+const CHART_COLORS_ARG = ['#7d3c64','#a8527a','#c97a9a','#e3a8c0','#5a4a7d','#8a7ab8','#c8b4e0'];
+const CHART_COLORS_CAL = ['#c17a2d','#d9954a','#e8b570','#f5d5a0','#8b5e2d','#c49060','#e8c090'];
+const CHART_COLORS = CHART_COLORS_ARG;
 
 const NAMES = {
-  "Female_Gen Z":       ["Emma","Olivia","Sophie","Chloe","Zoe","Ava","Lily","Mia"],
-  "Female_Millenials":  ["Sarah","Jennifer","Michelle","Amanda","Nicole","Stephanie","Rachel","Lisa"],
-  "Female_Gen X":       ["Linda","Patricia","Susan","Catherine","Diane","Carol","Janet","Karen"],
-  "Female_Baby Boomers":["Dorothy","Betty","Helen","Ruth","Frances","Joan","Mary","Gloria"],
-  "Male_Gen Z":         ["Liam","Noah","Ethan","Lucas","Oliver","Jack","Logan","Mason"],
-  "Male_Millenials":    ["James","Michael","David","Daniel","Ryan","Jason","Kevin","Andrew"],
-  "Male_Gen X":         ["Robert","William","Richard","Thomas","Stephen","Mark","Paul","Brian"],
-  "Male_Baby Boomers":  ["Harold","Walter","Frank","Raymond","Gerald","Arthur","Eugene","Howard"]
+  "Female_Gen Z":["Emma","Olivia","Sophie","Chloe","Zoe","Ava","Lily","Mia"],
+  "Female_Millenials":["Sarah","Jennifer","Michelle","Amanda","Nicole","Stephanie","Rachel","Lisa"],
+  "Female_Gen X":["Linda","Patricia","Susan","Catherine","Diane","Carol","Janet","Karen"],
+  "Female_Baby Boomers":["Dorothy","Betty","Helen","Ruth","Frances","Mary","Joan","Gloria"],
+  "Male_Gen Z":["Liam","Noah","Ethan","Lucas","Oliver","Jack","Logan","Mason"],
+  "Male_Millenials":["James","Michael","David","Daniel","Ryan","Jason","Andrew","Kevin"],
+  "Male_Gen X":["Robert","William","Richard","Thomas","Mark","Stephen","Paul","Brian"],
+  "Male_Baby Boomers":["Harold","Walter","Frank","Raymond","Gerald","Arthur","Eugene","Howard"]
 };
 
 function getPersonaName(gender, age) {
@@ -356,7 +465,6 @@ function getPersonaName(gender, age) {
   return list[Math.floor(Math.random() * list.length)];
 }
 
-// ---- AUTH ----
 function doLogin() {
   const u = document.getElementById('lu').value.trim();
   const p = document.getElementById('lp').value;
@@ -376,22 +484,35 @@ function doLogout() {
   document.getElementById('lp').value = '';
 }
 document.addEventListener('keydown', e => {
-  if(e.key === 'Enter' && document.getElementById('login').classList.contains('active')) doLogin();
+  if(e.key==='Enter' && document.getElementById('login').classList.contains('active')) doLogin();
 });
 
-// ---- DATA ----
 async function loadData() {
   try {
     const res = await fetch('/pear_data.json');
     consumerData = await res.json();
-    updateMatchCount();
+    updateCharts();
   } catch(err) { alert('Could not load consumer data.'); }
 }
 
-// ---- FILTERS ----
+function selectSeason(season) {
+  selectedSeason = season;
+  document.querySelectorAll('.season-btn').forEach(b => b.className = 'season-btn');
+  if(season === 'Argentina') document.getElementById('btn-arg').classList.add('active-arg');
+  else if(season === 'California') document.getElementById('btn-cal').classList.add('active-cal');
+  else if(season === 'Compare') document.getElementById('btn-compare').classList.add('active-compare');
+  updateCharts();
+}
+
 function clearFilter(id) {
   Array.from(document.getElementById(id).options).forEach(o => o.selected = false);
-  updateMatchCount();
+  updateCharts();
+}
+function clearAllFilters() {
+  ['f-gender','f-age','f-income','f-region','f-consumption','f-purchased'].forEach(id => {
+    Array.from(document.getElementById(id).options).forEach(o => o.selected = false);
+  });
+  updateCharts();
 }
 function getSelectedValues(id) {
   return Array.from(document.getElementById(id).selectedOptions).map(o => o.value);
@@ -406,142 +527,190 @@ function getFilters() {
     purchased:   getSelectedValues('f-purchased')
   };
 }
-function filterData(filters) {
-  if(!consumerData) return [];
-  return consumerData.filter(r => {
-    if(filters.gender.length      && !filters.gender.includes(r.gender))           return false;
-    if(filters.age.length         && !filters.age.includes(r.age))                 return false;
-    if(filters.income.length      && !filters.income.includes(r.income))           return false;
-    if(filters.region.length      && !filters.region.includes(r.region))           return false;
+function filterData(data, filters) {
+  return data.filter(r => {
+    if(filters.gender.length && !filters.gender.includes(r.gender)) return false;
+    if(filters.age.length && !filters.age.includes(r.age)) return false;
+    if(filters.income.length && !filters.income.includes(r.income)) return false;
+    if(filters.region.length && !filters.region.includes(r.region)) return false;
     if(filters.consumption.length && !filters.consumption.includes(r.consumption)) return false;
-    if(filters.purchased.length   && !filters.purchased.includes(r.purchased))     return false;
+    if(filters.purchased.length && !filters.purchased.includes(r.purchased)) return false;
     return true;
   });
 }
-document.querySelectorAll('#app select').forEach(s => s.addEventListener('change', updateMatchCount));
 
-function updateMatchCount() {
-  const matches = filterData(getFilters());
-  const el = document.getElementById('match-count');
+document.querySelectorAll('#app select').forEach(s => s.addEventListener('change', updateCharts));
+
+function updateCharts() {
   if(!consumerData) return;
-  if(matches.length === 0) {
-    el.textContent = 'No respondents match this combination. Try broadening your filters.';
-    el.style.color = '#c0392b';
-    document.getElementById('charts-card').style.display = 'none';
+  const filters = getFilters();
+  const allFiltered = filterData(consumerData, filters);
+
+  document.getElementById('charts-single').style.display = 'none';
+  document.getElementById('charts-compare').style.display = 'none';
+
+  if(selectedSeason === '' || selectedSeason === 'Compare') {
+    if(selectedSeason === 'Compare') {
+      const argData = allFiltered.filter(r => r.season === 'Argentina');
+      const calData = allFiltered.filter(r => r.season === 'California');
+      if(argData.length > 0 || calData.length > 0) {
+        renderCompareCharts(argData, calData);
+        document.getElementById('charts-compare').style.display = 'block';
+      }
+    }
   } else {
-    el.textContent = `${matches.length} respondent${matches.length !== 1 ? 's' : ''} match this profile`;
-    el.style.color = '#7d3c64';
-    document.getElementById('charts-card').style.display = 'block';
-    renderCharts(matches);
+    const seasonData = allFiltered.filter(r => r.season === selectedSeason);
+    if(seasonData.length > 0) {
+      document.getElementById('charts-single-title').textContent =
+        `Profile Snapshot — ${selectedSeason} Season`;
+      renderSingleCharts(seasonData);
+      document.getElementById('charts-single').style.display = 'block';
+    }
   }
 }
 
-// ---- DONUT CHARTS ----
-function renderDonut(svgId, centerId, legendId, data) {
+function renderDonut(svgId, data, colors) {
   const svg = document.getElementById(svgId);
+  if(!svg) return;
+  const total = data.reduce((s,d) => s+d.value, 0);
+  if(total === 0) { svg.innerHTML = ''; return; }
+  const cx=50,cy=50,r=40,inner=24;
+  let startAngle = -Math.PI/2;
+  let paths = '';
+  data.forEach((seg,i) => {
+    if(seg.value===0) return;
+    const angle=(seg.value/total)*2*Math.PI;
+    const endAngle=startAngle+angle;
+    const x1=cx+r*Math.cos(startAngle),y1=cy+r*Math.sin(startAngle);
+    const x2=cx+r*Math.cos(endAngle),y2=cy+r*Math.sin(endAngle);
+    const ix1=cx+inner*Math.cos(startAngle),iy1=cy+inner*Math.sin(startAngle);
+    const ix2=cx+inner*Math.cos(endAngle),iy2=cy+inner*Math.sin(endAngle);
+    const large=angle>Math.PI?1:0;
+    paths+=`<path d="M${ix1},${iy1} L${x1},${y1} A${r},${r} 0 ${large},1 ${x2},${y2} L${ix2},${iy2} A${inner},${inner} 0 ${large},0 ${ix1},${iy1} Z" fill="${colors[i%colors.length]}"/>`;
+    startAngle=endAngle;
+  });
+  svg.innerHTML=paths;
+}
+
+function renderDonutWithCenter(svgId, centerId, legendId, data, colors) {
+  renderDonut(svgId, data, colors);
+  const total = data.reduce((s,d)=>s+d.value,0);
   const center = document.getElementById(centerId);
   const legend = document.getElementById(legendId);
-  if(!svg) return;
+  if(center) center.innerHTML=`${total}<br><span style="font-size:9px;color:#aaa">total</span>`;
+  if(legend) legend.innerHTML=data.filter(d=>d.value>0).map((d,i)=>{
+    const pct=Math.round((d.value/total)*100);
+    return `<div><span class="legend-dot" style="background:${colors[i%colors.length]}"></span>${d.label} ${pct}%</div>`;
+  }).join('');
+}
 
-  const total = data.reduce((s, d) => s + d.value, 0);
-  if(total === 0) { svg.innerHTML = ''; legend.innerHTML = ''; return; }
+function getVarietyData(matches) {
+  const varieties=['anjou','bartlett','bosc','forelle','abate','asian','red_pear'];
+  const labels=['Anjou','Bartlett','Bosc','Forelle','Abate','Asian','Red Pear'];
+  return varieties.map((v,i)=>({label:labels[i],value:matches.filter(r=>r[v]==='Yes').length}));
+}
+function getFormatData(matches) {
+  const f={};
+  matches.forEach(r=>{if(r.format)f[r.format]=(f[r.format]||0)+1;});
+  return Object.entries(f).map(([k,v])=>({label:k,value:v}));
+}
+function getRetailerData(matches) {
+  const r={};
+  matches.forEach(row=>{if(row.retailer)r[row.retailer]=(r[row.retailer]||0)+1;});
+  return Object.entries(r).map(([k,v])=>({label:k,value:v}));
+}
+function getFreqData(matches) {
+  const order=['Once','Twice','3 times','More than 3x','Did not purchase'];
+  const f={};
+  matches.forEach(r=>{if(r.purchased)f[r.purchased]=(f[r.purchased]||0)+1;});
+  return order.map(k=>({label:k,value:f[k]||0})).filter(d=>d.value>0);
+}
 
-  const cx = 50, cy = 50, r = 40, inner = 24;
-  let startAngle = -Math.PI / 2;
-  let paths = '';
+function renderSingleCharts(matches) {
+  renderDonutWithCenter('chart-varieties','center-varieties','legend-varieties',getVarietyData(matches),CHART_COLORS_ARG);
+  renderDonutWithCenter('chart-format','center-format','legend-format',getFormatData(matches),CHART_COLORS_ARG);
+  renderDonutWithCenter('chart-retailer','center-retailer','legend-retailer',getRetailerData(matches),CHART_COLORS_ARG);
+  renderDonutWithCenter('chart-freq','center-freq','legend-freq',getFreqData(matches),CHART_COLORS_ARG);
+}
 
-  data.forEach((seg, i) => {
-    if(seg.value === 0) return;
-    const angle = (seg.value / total) * 2 * Math.PI;
-    const endAngle = startAngle + angle;
-    const x1 = cx + r * Math.cos(startAngle), y1 = cy + r * Math.sin(startAngle);
-    const x2 = cx + r * Math.cos(endAngle),   y2 = cy + r * Math.sin(endAngle);
-    const ix1 = cx + inner * Math.cos(startAngle), iy1 = cy + inner * Math.sin(startAngle);
-    const ix2 = cx + inner * Math.cos(endAngle),   iy2 = cy + inner * Math.sin(endAngle);
-    const large = angle > Math.PI ? 1 : 0;
-    const pct = Math.round((seg.value / total) * 100);
-    paths += `<path d="M${ix1},${iy1} L${x1},${y1} A${r},${r} 0 ${large},1 ${x2},${y2} L${ix2},${iy2} A${inner},${inner} 0 ${large},0 ${ix1},${iy1} Z" fill="${CHART_COLORS[i % CHART_COLORS.length]}" title="${seg.label}: ${pct}%"/>`;
-    startAngle = endAngle;
-  });
+function renderCompareCharts(argData, calData) {
+  renderCompareDonut('cmp-varieties', getVarietyData(argData), getVarietyData(calData));
+  renderCompareDonut('cmp-format', getFormatData(argData), getFormatData(calData));
+  renderCompareDonut('cmp-retailer', getRetailerData(argData), getRetailerData(calData));
+  renderCompareDonut('cmp-freq', getFreqData(argData), getFreqData(calData));
+}
 
-  svg.innerHTML = paths;
-  center.innerHTML = `${total}<br><span style="font-size:9px;color:#aaa">total</span>`;
+function renderCompareDonut(prefix, argData, calData) {
+  renderDonut(`${prefix}-arg`, argData, CHART_COLORS_ARG);
+  renderDonut(`${prefix}-cal`, calData, CHART_COLORS_CAL);
 
-  legend.innerHTML = data
-    .filter(d => d.value > 0)
-    .map((d, i) => {
-      const pct = Math.round((d.value / total) * 100);
-      return `<div><span class="legend-dot" style="background:${CHART_COLORS[i % CHART_COLORS.length]}"></span>${d.label} ${pct}%</div>`;
+  // Build combined legend and % change
+  const allLabels = [...new Set([...argData.map(d=>d.label),...calData.map(d=>d.label)])];
+  const argTotal = argData.reduce((s,d)=>s+d.value,0);
+  const calTotal = calData.reduce((s,d)=>s+d.value,0);
+
+  const changeCol = document.getElementById(`${prefix}-change`);
+  const legendEl = document.getElementById(`${prefix}-legend`);
+
+  if(changeCol) {
+    changeCol.innerHTML = allLabels.map(label => {
+      const argItem = argData.find(d=>d.label===label);
+      const calItem = calData.find(d=>d.label===label);
+      const argPct = argTotal > 0 && argItem ? Math.round((argItem.value/argTotal)*100) : 0;
+      const calPct = calTotal > 0 && calItem ? Math.round((calItem.value/calTotal)*100) : 0;
+      const diff = calPct - argPct;
+      const cls = diff > 0 ? 'change-pos' : diff < 0 ? 'change-neg' : 'change-neu';
+      const sign = diff > 0 ? '+' : '';
+      return `<div class="change-item ${cls}">${sign}${diff}%</div>`;
     }).join('');
+  }
+
+  if(legendEl) {
+    legendEl.innerHTML = allLabels.map((label,i) => {
+      const argItem = argData.find(d=>d.label===label);
+      const calItem = calData.find(d=>d.label===label);
+      const argPct = argTotal > 0 && argItem ? Math.round((argItem.value/argTotal)*100) : 0;
+      const calPct = calTotal > 0 && calItem ? Math.round((calItem.value/calTotal)*100) : 0;
+      return `<div><span class="legend-dot" style="background:${CHART_COLORS_ARG[i%CHART_COLORS_ARG.length]}"></span>${label}: ${argPct}% / ${calPct}%</div>`;
+    }).join('');
+  }
 }
 
-function renderCharts(matches) {
-  // Varieties
-  const varieties = ['anjou','bartlett','bosc','forelle','abate','asian','red_pear'];
-  const varietyLabels = ['Anjou','Bartlett','Bosc','Forelle','Abate','Asian','Red Pear'];
-  const varietyData = varieties.map((v, i) => ({
-    label: varietyLabels[i],
-    value: matches.filter(r => r[v] === 'Yes').length
-  }));
-  renderDonut('chart-varieties','center-varieties','legend-varieties', varietyData);
-
-  // Format
-  const formats = {};
-  matches.forEach(r => { if(r.format) formats[r.format] = (formats[r.format]||0)+1; });
-  renderDonut('chart-format','center-format','legend-format',
-    Object.entries(formats).map(([k,v]) => ({label:k, value:v})));
-
-  // Retailer
-  const retailers = {};
-  matches.forEach(r => { if(r.retailer) retailers[r.retailer] = (retailers[r.retailer]||0)+1; });
-  renderDonut('chart-retailer','center-retailer','legend-retailer',
-    Object.entries(retailers).map(([k,v]) => ({label:k, value:v})));
-
-  // Buy frequency
-  const freqs = {};
-  matches.forEach(r => { if(r.purchased) freqs[r.purchased] = (freqs[r.purchased]||0)+1; });
-  const freqOrder = ['Once','Twice','3 times','More than 3x'];
-  const freqData = freqOrder.map(f => ({label: f, value: freqs[f]||0}));
-  renderDonut('chart-freq','center-freq','legend-freq', freqData);
-}
-
-// ---- QUESTION SELECTION ----
 function selectQ(el) {
-  document.querySelectorAll('.q-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.q-btn').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
-  selectedQ = el.dataset.q;
+  selectedQ=el.dataset.q;
 }
 
-// ---- SENTIMENT ----
-const POSITIVE_WORDS = ['enjoy','enjoyed','love','loved','great','good','delicious','fresh','sweet','juicy','satisfied','happy','perfect','excellent','tasty','wonderful','amazing','nice','pleased','favorite','favourite','best','crisp','ripe','flavorful','flavourful'];
-const NEGATIVE_WORDS = ['disappointed','bad','poor','not good','dislike','hate','terrible','awful','bland','mushy','mealy','sour','bitter','hard','unripe','overripe','rotten','bruised','disappointing','unsatisfied','never','worst','dry','tasteless','spoiled','spoilt'];
+const POSITIVE_WORDS=['enjoy','enjoyed','love','loved','great','good','delicious','fresh','sweet','juicy','satisfied','happy','perfect','excellent','tasty','wonderful','amazing','nice','pleased','favorite','favourite','best','crisp','ripe','flavorful','flavourful'];
+const NEGATIVE_WORDS=['disappointed','bad','poor','not good','dislike','hate','terrible','awful','bland','mushy','mealy','sour','bitter','hard','unripe','overripe','rotten','bruised','disappointing','unsatisfied','never','worst','dry','tasteless','spoiled','spoilt'];
 
 function analyzeSentiment(responses) {
-  let pos = 0, neg = 0, mixed = 0;
-  responses.forEach(r => {
-    const text = String(r).toLowerCase();
-    const hasPos = POSITIVE_WORDS.some(w => text.includes(w));
-    const hasNeg = NEGATIVE_WORDS.some(w => text.includes(w));
-    if(hasPos && hasNeg) mixed++;
-    else if(hasPos) pos++;
-    else if(hasNeg) neg++;
+  let pos=0,neg=0,mixed=0;
+  responses.forEach(r=>{
+    const text=String(r).toLowerCase();
+    const hasPos=POSITIVE_WORDS.some(w=>text.includes(w));
+    const hasNeg=NEGATIVE_WORDS.some(w=>text.includes(w));
+    if(hasPos&&hasNeg)mixed++;
+    else if(hasPos)pos++;
+    else if(hasNeg)neg++;
     else mixed++;
   });
-  const total = responses.length;
-  let positive = Math.round((pos/total)*100);
-  let mixedPct = Math.round((mixed/total)*100);
-  let negative = Math.round((neg/total)*100);
-  const sum = positive + mixedPct + negative;
-  if(sum !== 100) positive += (100 - sum);
-  return { positive, mixed: mixedPct, negative, counts: {pos, mixed, neg, total} };
+  const total=responses.length;
+  let positive=Math.round((pos/total)*100);
+  let mixedPct=Math.round((mixed/total)*100);
+  let negative=Math.round((neg/total)*100);
+  const sum=positive+mixedPct+negative;
+  if(sum!==100)positive+=(100-sum);
+  return{positive,mixed:mixedPct,negative};
 }
 
-function renderSentimentBar(s) {
-  const segs = [];
-  if(s.positive > 0) segs.push(`<div class="sentiment-seg sentiment-positive" style="width:${s.positive}%">${s.positive}%</div>`);
-  if(s.mixed > 0)    segs.push(`<div class="sentiment-seg sentiment-mixed" style="width:${s.mixed}%">${s.mixed}%</div>`);
-  if(s.negative > 0) segs.push(`<div class="sentiment-seg sentiment-negative" style="width:${s.negative}%">${s.negative}%</div>`);
-  return `<div class="sentiment-label">Sentiment breakdown of sampled responses</div>
+function renderSentimentBar(s, label) {
+  const segs=[];
+  if(s.positive>0)segs.push(`<div class="sentiment-seg sentiment-positive" style="width:${s.positive}%">${s.positive}%</div>`);
+  if(s.mixed>0)segs.push(`<div class="sentiment-seg sentiment-mixed" style="width:${s.mixed}%">${s.mixed}%</div>`);
+  if(s.negative>0)segs.push(`<div class="sentiment-seg sentiment-negative" style="width:${s.negative}%">${s.negative}%</div>`);
+  return `<div class="sentiment-label">${label||'Sentiment breakdown'}</div>
     <div class="sentiment-track">${segs.join('')}</div>
     <div class="sentiment-legend">
       <span><span class="sentiment-dot" style="background:#5a9367"></span>Positive</span>
@@ -550,180 +719,219 @@ function renderSentimentBar(s) {
     </div>`;
 }
 
-// ---- GENERATE ----
-const AGE_ORDER = ['Gen Z','Millenials','Gen X','Baby Boomers'];
-const INCOME_ORDER = ['<$50K','$50K-$100K','$100K-$150K','>$150K'];
+const AGE_ORDER=['Gen Z','Millenials','Gen X','Baby Boomers'];
+const INCOME_ORDER=['<$50K','$50K-$100K','$100K-$150K','>$150K'];
+const AGE_LABELS=['Gen Z','Millennials','Gen X','Baby Boomers'];
+const INCOME_LABELS=['Under $50K','$50K–$100K','$100K–$150K','Over $150K'];
 
-function describeList(arr, order, labels) {
-  if(arr.length === 0) return null;
-  if(arr.length === 1) return labels ? labels[order.indexOf(arr[0])] || arr[0] : arr[0];
-  const sorted = [...arr].sort((a,b) => order.indexOf(a) - order.indexOf(b));
-  const indices = sorted.map(a => order.indexOf(a));
-  const consecutive = indices.every((v,i) => i===0 || v===indices[i-1]+1);
-  if(consecutive && labels) {
-    return `${labels[indices[0]]} to ${labels[indices[indices.length-1]]}`;
-  }
-  return sorted.map((v,i) => labels ? labels[order.indexOf(v)] || v : v).join(' or ');
+function describeList(arr,order,labels) {
+  if(arr.length===0)return null;
+  if(arr.length===1)return labels?labels[order.indexOf(arr[0])]||arr[0]:arr[0];
+  const sorted=[...arr].sort((a,b)=>order.indexOf(a)-order.indexOf(b));
+  const indices=sorted.map(a=>order.indexOf(a));
+  const consecutive=indices.every((v,i)=>i===0||v===indices[i-1]+1);
+  if(consecutive&&labels)return`${labels[indices[0]]} to ${labels[indices[indices.length-1]]}`;
+  return sorted.map((v,i)=>labels?labels[order.indexOf(v)]||v:v).join(' or ');
 }
 
-const AGE_LABELS   = ['Gen Z','Millennials','Gen X','Baby Boomers'];
-const INCOME_LABELS = ['Under $50K','$50K–$100K','$100K–$150K','Over $150K'];
-
 async function generate() {
+  if(!selectedSeason) { alert('Please select a season first.'); return; }
   const filters = getFilters();
-  const matches = filterData(filters);
-  if(matches.length === 0) { alert('No respondents match this combination.'); return; }
+  const allFiltered = filterData(consumerData, filters);
 
-  document.getElementById('gbtn').disabled = true;
-  document.getElementById('spin').style.display = 'block';
-  document.getElementById('out-card').style.display = 'none';
-  document.getElementById('empty-state').style.display = 'none';
-
-  const gender = filters.gender.length > 0 ? filters.gender[Math.floor(Math.random()*filters.gender.length)] : 'Male';
-  const age    = filters.age.length > 0    ? filters.age[Math.floor(Math.random()*filters.age.length)]       : 'Millenials';
-  const personaName = getPersonaName(gender, age);
-  const initials = personaName.slice(0,2).toUpperCase();
-
-  const parts = [];
-  if(filters.gender.length)      parts.push(filters.gender.join(' or '));
-  const ageDesc = describeList(filters.age, AGE_ORDER, AGE_LABELS);
-  if(ageDesc) parts.push(ageDesc);
-  const incDesc = describeList(filters.income, INCOME_ORDER, INCOME_LABELS);
-  if(incDesc) parts.push(incDesc);
-  if(filters.region.length)      parts.push(filters.region.join(' or '));
-  if(filters.consumption.length) parts.push(filters.consumption.join(' or ') + ' per week');
-  if(filters.purchased.length)   parts.push('purchased ' + filters.purchased.join(' or ') + ' last 30 days');
-  const demoDesc = parts.length > 0 ? parts.join(' · ') : 'All Canadian pear consumers';
-
-  const shuffled = [...matches].sort(() => Math.random() - 0.5);
-  const sample = shuffled.slice(0, 150);
-  const responses = sample.map(r => r[selectedQ]).filter(Boolean);
-
-  if(responses.length === 0) {
-    alert('No responses found for this combination.');
-    document.getElementById('gbtn').disabled = false;
-    document.getElementById('spin').style.display = 'none';
-    return;
-  }
-
-  const sentiment = analyzeSentiment(responses);
-
-  const warn = document.getElementById('sample-warning');
-  if(responses.length < 5) {
-    warn.textContent = `Small sample (${responses.length} response${responses.length!==1?'s':''}) — may not be representative`;
-    warn.style.display = 'inline-block';
+  let matches, argMatches, calMatches;
+  if(selectedSeason === 'Compare') {
+    argMatches = allFiltered.filter(r=>r.season==='Argentina');
+    calMatches = allFiltered.filter(r=>r.season==='California');
+    if(argMatches.length===0 && calMatches.length===0) { alert('No respondents match this combination.'); return; }
   } else {
-    warn.style.display = 'none';
+    matches = allFiltered.filter(r=>r.season===selectedSeason);
+    if(matches.length===0) { alert('No respondents match this combination.'); return; }
   }
 
-  const spinMsgs = ['Reading consumer responses...','Finding the common threads...','Synthesizing the consumer voice...','Almost ready...'];
-  let msgIdx = 0;
-  const spinInterval = setInterval(() => {
-    msgIdx = (msgIdx+1) % spinMsgs.length;
-    document.getElementById('spin-msg').textContent = spinMsgs[msgIdx];
-  }, 2000);
+  document.getElementById('gbtn').disabled=true;
+  document.getElementById('spin').style.display='block';
+  document.getElementById('out-card').style.display='none';
+  document.getElementById('empty-state').style.display='none';
+
+  const gender=filters.gender.length>0?filters.gender[Math.floor(Math.random()*filters.gender.length)]:'Female';
+  const age=filters.age.length>0?filters.age[Math.floor(Math.random()*filters.age.length)]:'Millenials';
+  const personaName=getPersonaName(gender,age);
+  const initials=personaName.slice(0,2).toUpperCase();
+
+  const parts=[];
+  if(filters.gender.length)parts.push(filters.gender.join(' or '));
+  const ageDesc=describeList(filters.age,AGE_ORDER,AGE_LABELS);
+  if(ageDesc)parts.push(ageDesc);
+  const incDesc=describeList(filters.income,INCOME_ORDER,INCOME_LABELS);
+  if(incDesc)parts.push(incDesc);
+  if(filters.region.length)parts.push(filters.region.join(' or '));
+  const demoDesc=parts.length>0?parts.join(' · '):'All Canadian pear consumers';
+
+  const spinMsgs=['Reading consumer responses...','Finding the common threads...','Synthesizing the consumer voice...','Almost ready...'];
+  let msgIdx=0;
+  const spinInterval=setInterval(()=>{
+    msgIdx=(msgIdx+1)%spinMsgs.length;
+    document.getElementById('spin-msg').textContent=spinMsgs[msgIdx];
+  },2000);
 
   try {
-    const res = await fetch('/api/pear-voice', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ persona_name: personaName, demo_desc: demoDesc, question: QUESTIONS[selectedQ], responses })
-    });
-    const data = await res.json();
+    let reply, sentimentHTML, badge, historyEntry;
+
+    if(selectedSeason === 'Compare') {
+      const argSample=[...argMatches].sort(()=>Math.random()-0.5).slice(0,150);
+      const calSample=[...calMatches].sort(()=>Math.random()-0.5).slice(0,150);
+      const argResponses=argSample.map(r=>r[selectedQ]).filter(Boolean);
+      const calResponses=calSample.map(r=>r[selectedQ]).filter(Boolean);
+
+      const warn=document.getElementById('sample-warning');
+      if(argResponses.length<5||calResponses.length<5){
+        warn.textContent=`Small sample in one or both seasons — results may not be representative`;
+        warn.style.display='inline-block';
+      } else { warn.style.display='none'; }
+
+      const res=await fetch('/api/pear-compare',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          persona_name:personaName,
+          demo_desc:demoDesc,
+          question:QUESTIONS[selectedQ],
+          arg_responses:argResponses,
+          cal_responses:calResponses
+        })
+      });
+      const data=await res.json();
+      if(data.error)throw new Error(data.error);
+      reply=data.reply;
+
+      const argSentiment=analyzeSentiment(argResponses);
+      const calSentiment=analyzeSentiment(calResponses);
+      sentimentHTML=renderSentimentBar(argSentiment,'🇦🇷 Argentina sentiment')+
+                    '<div style="margin-top:0.5rem">'+renderSentimentBar(calSentiment,'🇺🇸 California sentiment')+'</div>';
+      badge=`<div class="compare-badge">⚖️ Seasonal Comparison — ${QUESTIONS[selectedQ]}</div>`;
+
+      historyEntry={
+        name:personaName,desc:demoDesc,question:QUESTIONS[selectedQ],
+        text:reply,
+        sentiment:{positive:Math.round((argSentiment.positive+calSentiment.positive)/2),
+                   mixed:Math.round((argSentiment.mixed+calSentiment.mixed)/2),
+                   negative:Math.round((argSentiment.negative+calSentiment.negative)/2)},
+        sampleCount:argResponses.length+calResponses.length,
+        season:'Compare',
+        time:new Date().toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'})
+      };
+
+    } else {
+      const sample=[...matches].sort(()=>Math.random()-0.5).slice(0,150);
+      const responses=sample.map(r=>r[selectedQ]).filter(Boolean);
+
+      const warn=document.getElementById('sample-warning');
+      if(responses.length<5){
+        warn.textContent=`Small sample (${responses.length} response${responses.length!==1?'s':''}) — may not be representative`;
+        warn.style.display='inline-block';
+      } else { warn.style.display='none'; }
+
+      const res=await fetch('/api/pear-voice',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({persona_name:personaName,demo_desc:demoDesc,question:QUESTIONS[selectedQ],responses})
+      });
+      const data=await res.json();
+      if(data.error)throw new Error(data.error);
+      reply=data.reply;
+
+      const sentiment=analyzeSentiment(responses);
+      sentimentHTML=renderSentimentBar(sentiment,`🍐 ${selectedSeason} season sentiment`);
+      badge=`<div class="q-label">${selectedSeason} · ${QUESTIONS[selectedQ]}</div>`;
+
+      historyEntry={
+        name:personaName,desc:demoDesc,question:QUESTIONS[selectedQ],
+        text:reply,sentiment,sampleCount:responses.length,season:selectedSeason,
+        time:new Date().toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'})
+      };
+    }
+
     clearInterval(spinInterval);
-    if(data.error) throw new Error(data.error);
-
-    document.getElementById('out-av').textContent = initials;
-    document.getElementById('out-name').textContent = `${personaName} — ${demoDesc}`;
-    document.getElementById('out-desc').textContent = `Synthesized from ${matches.length} matching consumer response${matches.length!==1?'s':''}`;
-    document.getElementById('out-q-label').textContent = QUESTIONS[selectedQ];
-    document.getElementById('out-count').textContent = `${responses.length} responses sampled`;
-    document.getElementById('sentiment-bar').innerHTML = renderSentimentBar(sentiment);
-
-    const paragraphs = data.reply.split('\n').filter(p => p.trim());
-    document.getElementById('out-text').innerHTML = paragraphs.map(p => `<p>${p}</p>`).join('');
-    document.getElementById('out-card').style.display = 'block';
+    document.getElementById('out-av').textContent=initials;
+    document.getElementById('out-name').textContent=`${personaName} — ${demoDesc}`;
+    document.getElementById('out-desc').textContent=selectedSeason==='Compare'?'Comparing Argentina and California seasons':'';
+    document.getElementById('out-q-label').innerHTML=badge;
+    document.getElementById('sentiment-bar').innerHTML=sentimentHTML;
+    const paragraphs=reply.split('\n').filter(p=>p.trim());
+    document.getElementById('out-text').innerHTML=paragraphs.map(p=>`<p>${p}</p>`).join('');
+    document.getElementById('out-card').style.display='block';
     document.getElementById('out-card').scrollIntoView({behavior:'smooth'});
 
-    questionHistory.unshift({
-      name: personaName, desc: demoDesc, question: QUESTIONS[selectedQ],
-      text: data.reply, sentiment, sampleCount: responses.length,
-      matchCount: matches.length,
-      time: new Date().toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'})
-    });
+    questionHistory.unshift(historyEntry);
     renderHistory();
 
   } catch(err) {
     clearInterval(spinInterval);
-    alert('Something went wrong: ' + err.message);
+    alert('Something went wrong: '+err.message);
   }
-
-  document.getElementById('spin').style.display = 'none';
-  document.getElementById('gbtn').disabled = false;
+  document.getElementById('spin').style.display='none';
+  document.getElementById('gbtn').disabled=false;
 }
 
-// ---- HISTORY ----
 function renderHistory() {
-  const card = document.getElementById('history-card');
-  const list = document.getElementById('history-list');
-  if(questionHistory.length === 0) { card.style.display = 'none'; return; }
-  card.style.display = 'block';
-  list.innerHTML = questionHistory.map((h,i) => `
+  const card=document.getElementById('history-card');
+  const list=document.getElementById('history-list');
+  if(questionHistory.length===0){card.style.display='none';return;}
+  card.style.display='block';
+  list.innerHTML=questionHistory.map((h,i)=>`
     <div class="history-item" id="hist-${i}">
-      <div class="h-top"><span class="h-name">${h.name} — ${h.desc}</span><span class="h-time">${h.time}</span></div>
-      <div class="h-q">${h.question} · ${h.sampleCount} of ${h.matchCount} sampled · ${h.sentiment.positive}% positive / ${h.sentiment.mixed}% mixed / ${h.sentiment.negative}% negative</div>
+      <div class="h-top"><span class="h-name">${h.name} — ${h.desc}</span><span class="h-time">${h.season} · ${h.time}</span></div>
+      <div class="h-q">${h.question} · ${h.sentiment.positive}% positive / ${h.sentiment.mixed}% mixed / ${h.sentiment.negative}% negative</div>
       <div class="h-text">${h.text.split('\n').filter(p=>p.trim()).map(p=>`<p style="margin-bottom:0.5rem">${p}</p>`).join('')}</div>
       <div class="h-toggle" onclick="toggleHistoryItem(${i})">Show response</div>
     </div>`).join('');
 }
 
 function toggleHistoryItem(i) {
-  const item = document.getElementById(`hist-${i}`);
-  const toggle = item.querySelector('.h-toggle');
+  const item=document.getElementById(`hist-${i}`);
+  const toggle=item.querySelector('.h-toggle');
   item.classList.toggle('expanded');
-  toggle.textContent = item.classList.contains('expanded') ? 'Hide response' : 'Show response';
+  toggle.textContent=item.classList.contains('expanded')?'Hide response':'Show response';
 }
 
 function downloadHistoryPDF() {
-  if(questionHistory.length === 0) { alert('No history to download yet.'); return; }
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({unit:'pt',format:'letter'});
-  const pw = doc.internal.pageSize.getWidth();
-  const margin = 50, mw = pw - margin*2;
-  let y = 60;
-
-  doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.setTextColor(125,60,100);
-  doc.text('The Pear Experience — Question History', margin, y); y += 18;
-  doc.setFontSize(9); doc.setTextColor(150,150,150);
-  doc.text(`Generated ${new Date().toLocaleString('en-CA')}`, margin, y); y += 30;
-
-  questionHistory.slice().reverse().forEach((h,idx) => {
-    if(y > 700) { doc.addPage(); y = 60; }
-    doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(125,60,100);
-    doc.text(`${h.name} — ${h.desc}`, margin, y); y += 16;
-    doc.setFont('helvetica','italic'); doc.setFontSize(10); doc.setTextColor(100,100,100);
-    const qLines = doc.splitTextToSize(h.question, mw);
-    doc.text(qLines, margin, y); y += qLines.length*13+4;
-    doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(150,100,60);
-    doc.text(`${h.sampleCount} of ${h.matchCount} responses · Sentiment: ${h.sentiment.positive}% positive, ${h.sentiment.mixed}% mixed, ${h.sentiment.negative}% negative · ${h.time}`, margin, y); y += 18;
-    doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(30,30,30);
-    const bodyLines = doc.splitTextToSize(h.text, mw);
-    bodyLines.forEach(line => { if(y>740){doc.addPage();y=60;} doc.text(line,margin,y); y+=13; });
-    y += 16;
-    if(idx < questionHistory.length-1) { doc.setDrawColor(230,220,225); doc.line(margin,y-8,pw-margin,y-8); y+=8; }
+  if(questionHistory.length===0){alert('No history to download yet.');return;}
+  const{jsPDF}=window.jspdf;
+  const doc=new jsPDF({unit:'pt',format:'letter'});
+  const pw=doc.internal.pageSize.getWidth();
+  const margin=50,mw=pw-margin*2;
+  let y=60;
+  doc.setFont('helvetica','bold');doc.setFontSize(16);doc.setTextColor(125,60,100);
+  doc.text('The Pear Experience — Question History',margin,y);y+=18;
+  doc.setFontSize(9);doc.setTextColor(150,150,150);
+  doc.text(`Generated ${new Date().toLocaleString('en-CA')}`,margin,y);y+=30;
+  questionHistory.slice().reverse().forEach((h,idx)=>{
+    if(y>700){doc.addPage();y=60;}
+    doc.setFont('helvetica','bold');doc.setFontSize(12);doc.setTextColor(125,60,100);
+    doc.text(`${h.name} — ${h.desc}`,margin,y);y+=16;
+    doc.setFont('helvetica','italic');doc.setFontSize(10);doc.setTextColor(100,100,100);
+    const qLines=doc.splitTextToSize(`[${h.season}] ${h.question}`,mw);
+    doc.text(qLines,margin,y);y+=qLines.length*13+4;
+    doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(150,100,60);
+    doc.text(`Sentiment: ${h.sentiment.positive}% positive, ${h.sentiment.mixed}% mixed, ${h.sentiment.negative}% negative · ${h.time}`,margin,y);y+=18;
+    doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(30,30,30);
+    const bodyLines=doc.splitTextToSize(h.text,mw);
+    bodyLines.forEach(line=>{if(y>740){doc.addPage();y=60;}doc.text(line,margin,y);y+=13;});
+    y+=16;
+    if(idx<questionHistory.length-1){doc.setDrawColor(230,220,225);doc.line(margin,y-8,pw-margin,y-8);y+=8;}
   });
   doc.save('pear-experience-history.pdf');
 }
 
-// ---- COPY ----
 function copyOutput() {
-  const name = document.getElementById('out-name').textContent;
-  const q = document.getElementById('out-q-label').textContent;
-  const text = document.getElementById('out-text').innerText;
-  navigator.clipboard.writeText(`${name}\n${q}\n\n${text}`).then(() => {
-    const b = document.querySelector('.btn-copy');
-    b.textContent = 'Copied!';
-    setTimeout(() => b.textContent = 'Copy text', 2000);
+  const name=document.getElementById('out-name').textContent;
+  const q=document.getElementById('out-q-label').textContent;
+  const text=document.getElementById('out-text').innerText;
+  navigator.clipboard.writeText(`${name}\n${q}\n\n${text}`).then(()=>{
+    const b=document.querySelector('.btn-copy');
+    b.textContent='Copied!';
+    setTimeout(()=>b.textContent='Copy text',2000);
   });
 }
 </script>
