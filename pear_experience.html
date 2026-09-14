@@ -276,7 +276,6 @@ select.profile-b[multiple] option:checked{background:#2d5a7d;color:#fff}
             <option value="Twice">Twice</option>
             <option value="3 times">3 times</option>
             <option value="More than 3x">More than 3 times</option>
-            <option value="Did not purchase">Did not purchase</option>
           </select>
           <button type="button" class="clear-btn" onclick="clearFilter('f-purchased')">Clear</button>
         </div>
@@ -345,7 +344,6 @@ select.profile-b[multiple] option:checked{background:#2d5a7d;color:#fff}
               <option value="Twice">Twice</option>
               <option value="3 times">3 times</option>
               <option value="More than 3x">More than 3 times</option>
-              <option value="Did not purchase">Did not purchase</option>
             </select>
             <button type="button" class="clear-btn" onclick="clearFilter('b-purchased')">Clear</button>
           </div>
@@ -674,7 +672,7 @@ function getRetailerData(matches){
   return Object.entries(r).map(([k,v])=>({label:k,value:v}));
 }
 function getFreqData(matches){
-  const order=['Once','Twice','3 times','More than 3x','Did not purchase'];
+  const order=['Once','Twice','3 times','More than 3x'];
   const f={};
   matches.forEach(r=>{if(r.purchased)f[r.purchased]=(f[r.purchased]||0)+1;});
   return order.map(k=>({label:k,value:f[k]||0})).filter(d=>d.value>0);
@@ -902,7 +900,15 @@ async function generate(){
       const calSample=[...calMatches].sort(()=>Math.random()-0.5).slice(0,150);
       const argResponses=argSample.map(r=>r[selectedQ]).filter(Boolean);
       const calResponses=calSample.map(r=>r[selectedQ]).filter(Boolean);
-      showWarn(argResponses.length<5||calResponses.length<5,'Small sample in one or both seasons');
+      if(argResponses.length < 5 || calResponses.length < 5){
+        clearInterval(spinInterval);
+        alert(`Insufficient responses: Argentina has ${argResponses.length}, California has ${calResponses.length}. Please broaden your filters to get a meaningful result.`);
+        document.getElementById('gbtn').disabled=false;
+        document.getElementById('spin').style.display='none';
+        document.getElementById('empty-state').style.display='block';
+        return;
+      }
+      showWarn(false,'');
 
       const res=await fetch('/api/pear-compare',{method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({persona_name:personaName,demo_desc:demoDesc,question:QUESTIONS[selectedQ],arg_responses:argResponses,cal_responses:calResponses})});
@@ -942,7 +948,15 @@ async function generate(){
       const sampleB=[...dataB].sort(()=>Math.random()-0.5).slice(0,150);
       const responsesA=sampleA.map(r=>r[selectedQ]).filter(Boolean);
       const responsesB=sampleB.map(r=>r[selectedQ]).filter(Boolean);
-      showWarn(responsesA.length<5||responsesB.length<5,'Small sample in one or both profiles');
+      if(responsesA.length < 5 || responsesB.length < 5){
+        clearInterval(spinInterval);
+        alert(`Insufficient responses: Profile A has ${responsesA.length}, Profile B has ${responsesB.length}. Please broaden your filters to get a meaningful result.`);
+        document.getElementById('gbtn').disabled=false;
+        document.getElementById('spin').style.display='none';
+        document.getElementById('empty-state').style.display='block';
+        return;
+      }
+      showWarn(false,'');
 
       const res=await fetch('/api/pear-demo-compare',{method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({persona_name:personaName,desc_a:descA,desc_b:descB,question:QUESTIONS[selectedQ],responses_a:responsesA,responses_b:responsesB})});
@@ -977,7 +991,15 @@ async function generate(){
       }
       const sample=[...matches].sort(()=>Math.random()-0.5).slice(0,150);
       const responses=sample.map(r=>r[selectedQ]).filter(Boolean);
-      showWarn(responses.length<5,`Small sample (${responses.length} response${responses.length!==1?'s':''}) — may not be representative`);
+      if(responses.length < 5){
+        clearInterval(spinInterval);
+        alert(`Only ${responses.length} response${responses.length!==1?'s':''} match this combination. Please broaden your filters to get a meaningful result.`);
+        document.getElementById('gbtn').disabled=false;
+        document.getElementById('spin').style.display='none';
+        document.getElementById('empty-state').style.display='block';
+        return;
+      }
+      showWarn(false,'');
 
       const res=await fetch('/api/pear-voice',{method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({persona_name:personaName,demo_desc:demoDesc,question:QUESTIONS[selectedQ],responses})});
