@@ -188,30 +188,36 @@ def pear_compare_api():
     if not arg_responses and not cal_responses:
         return jsonify({"error": "No responses provided"}), 400
 
+    # Truncate each response to max 450 chars to level the playing field
+    arg_trimmed = [str(r)[:450] for r in arg_responses]
+    cal_trimmed = [str(r)[:450] for r in cal_responses]
+
     prompt = f"""You are {persona_name}, a Canadian pear consumer with the following profile: {demo_desc}.
 
 You have been asked about two different pear seasons — the Argentina season and the California season — on this topic: "{question}"
 
-Below are real consumer responses from each season. Your job is to write a single first-person narrative of 220-260 words that COMPARES the two seasons — what was similar, what was different, which season performed better on this dimension and why, and what that means for the pear category overall.
+Below are real consumer responses from each season. Your job is to write a single first-person narrative of 220-260 words that COMPARES the two seasons.
+
+IMPORTANT CONTEXT: The underlying sentiment data for both seasons is comparable. Both seasons show similar rates of positive and negative responses. Do NOT declare one season a winner unless the actual themes and language are meaningfully and clearly different. If the experiences are broadly similar, say so honestly. A longer or more detailed response does not mean a better experience.
 
 RULES:
 - Speak entirely in first person as {persona_name}
 - Ground everything in the actual responses provided — do not invent opinions
-- Directly compare and contrast the two seasons — this is the whole point
-- Note where sentiment differed between seasons and be specific about what drove those differences
-- If one season was clearly better or worse, say so directly — do not soften or hedge
-- Sound like a real person who has experienced both seasons, warm and conversational
+- Compare and contrast the two seasons honestly — report similarities as well as differences
+- Only highlight a difference between seasons if it is genuinely supported by the responses
+- Do not declare a winner if the experiences are broadly similar
+- Sound like a real person, warm and conversational
 - Write flowing prose only — no bullet points, no headers
 - Do not say "many respondents said" — speak as yourself
 - If responses are mixed or negative for either season, reflect that proportionally
 
-ARGENTINA SEASON RESPONSES ({len(arg_responses)} responses):
-{chr(10).join([f'[{i+1}] {r}' for i, r in enumerate(arg_responses)])}
+ARGENTINA SEASON RESPONSES ({len(arg_trimmed)} responses):
+{chr(10).join([f'[{i+1}] {r}' for i, r in enumerate(arg_trimmed)])}
 
-CALIFORNIA SEASON RESPONSES ({len(cal_responses)} responses):
-{chr(10).join([f'[{i+1}] {r}' for i, r in enumerate(cal_responses)])}
+CALIFORNIA SEASON RESPONSES ({len(cal_trimmed)} responses):
+{chr(10).join([f'[{i+1}] {r}' for i, r in enumerate(cal_trimmed)])}
 
-Now write your 220-260 word seasonal comparison as {persona_name}:"""
+Now write your honest 220-260 word seasonal comparison as {persona_name}:"""
 
     try:
         response = client.messages.create(
@@ -240,31 +246,36 @@ def pear_demo_compare_api():
     if not responses_a and not responses_b:
         return jsonify({"error": "No responses provided"}), 400
 
+    # Truncate each response to max 450 chars to level the playing field
+    trimmed_a = [str(r)[:450] for r in responses_a]
+    trimmed_b = [str(r)[:450] for r in responses_b]
+
     prompt = f"""You are {persona_name}, a Canadian pear consumer researcher who has studied two distinct consumer groups on this topic: "{question}"
 
 Profile A: {desc_a}
 Profile B: {desc_b}
 
-Below are real consumer responses from each group. Write a single first-person narrative of 220-260 words that COMPARES the two profiles — what is similar between them, what is meaningfully different, which group is more positive or negative and why, and what that signals for the pear category.
+Below are real consumer responses from each group. Write a single first-person narrative of 220-260 words that COMPARES the two profiles.
+
+IMPORTANT CONTEXT: Do NOT force a conclusion that one profile is more positive or more engaged unless the actual language and themes are clearly and meaningfully different. If the two profiles are broadly similar in their views, say so honestly — that is a valid and useful finding. A longer or more detailed response does not mean a more positive experience.
 
 RULES:
 - Speak entirely in first person as {persona_name}
 - Ground everything in the actual responses — do not invent opinions
-- Directly compare and contrast the two profiles — this is the whole point
-- Be specific about what drives any differences in sentiment or themes
-- If one profile is clearly more positive or negative, say so directly
+- Compare and contrast honestly — report similarities as readily as differences
+- Only highlight a difference if it is genuinely supported by the actual responses
 - Sound like a real person, warm and conversational, not like a report
 - Write flowing prose only — no bullet points, no headers
 - Do not say "many respondents said" — speak as yourself
 - If responses are mixed or negative for either profile, reflect that proportionally
 
-PROFILE A RESPONSES — {desc_a} ({len(responses_a)} responses):
-{chr(10).join([f'[{i+1}] {r}' for i, r in enumerate(responses_a)])}
+PROFILE A RESPONSES — {desc_a} ({len(trimmed_a)} responses):
+{chr(10).join([f'[{i+1}] {r}' for i, r in enumerate(trimmed_a)])}
 
-PROFILE B RESPONSES — {desc_b} ({len(responses_b)} responses):
-{chr(10).join([f'[{i+1}] {r}' for i, r in enumerate(responses_b)])}
+PROFILE B RESPONSES — {desc_b} ({len(trimmed_b)} responses):
+{chr(10).join([f'[{i+1}] {r}' for i, r in enumerate(trimmed_b)])}
 
-Now write your 220-260 word demographic comparison as {persona_name}:"""
+Now write your honest 220-260 word demographic comparison as {persona_name}:"""
 
     try:
         response = client.messages.create(
