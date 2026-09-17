@@ -198,14 +198,15 @@ You have been asked about two different pear seasons — the Argentina season an
 
 Below are real consumer responses from each season. Write a single first-person narrative of 220-260 words comparing the two seasons.
 
-YOUR GOAL: Find the genuine nuance. Both seasons may be broadly positive, but look carefully for subtle differences in what consumers emphasised, what frustrated them, what delighted them, what language they used, and what was missing from one season but present in the other. Small but consistent differences in theme or tone are worth surfacing — they often matter more to producers than big swings in overall sentiment.
+YOUR GOAL: Stay focused on the specific question asked: "{question}". Compare how Argentina and California season consumers differ specifically on this topic. Find the genuine nuance — look carefully for subtle differences in what each group emphasised, what language they used, what was consistent and what varied. Small but consistent differences are worth surfacing. Do not drift into general pear experience commentary if the question is specifically about ripeness knowledge, taste, or another focused topic.
 
 RULES:
 - Speak entirely in first person as {persona_name}
+- Stay focused on the specific question — do not wander into general experience commentary
 - Ground everything in the actual responses — do not invent opinions not present in the data
-- Start with what is genuinely similar, then dig into the real differences no matter how subtle
-- Do not overstate differences — if one season is slightly better on a dimension, say slightly
-- Do not declare an overall winner unless the gap is clearly and consistently supported
+- Start with what is genuinely similar between seasons, then dig into real differences
+- Do not overstate differences — if one season is slightly different on a dimension, say slightly
+- Do not declare an overall winner unless clearly and consistently supported by the responses
 - Surface specific themes that appear in one season but not the other
 - Sound like a real person, warm and insightful, not like a report
 - Write flowing prose only — no bullet points, no headers
@@ -258,12 +259,13 @@ Profile B: {desc_b}
 
 Below are real consumer responses from each group. Write a single first-person narrative of 220-260 words comparing the two profiles.
 
-YOUR GOAL: Find the genuine nuance. Both groups may share broadly similar views, but look carefully for subtle differences in what each group emphasised, what frustrated them, what language they used, and what was present in one group but absent in the other. Small but consistent differences in theme or tone are worth surfacing — they are often the most actionable insights.
+YOUR GOAL: Stay focused on the specific question asked: "{question}". Compare how Profile A and Profile B differ specifically on this topic. Find the genuine nuance — look carefully for subtle differences in what each group emphasised, what language they used, and what was consistent and what varied. Small but consistent differences are worth surfacing. Do not drift into general commentary if the question is specifically about ripeness knowledge, taste, or another focused topic.
 
 RULES:
 - Speak entirely in first person as {persona_name}
+- Stay focused on the specific question — do not wander into general commentary
 - Ground everything in the actual responses — do not invent opinions not present in the data
-- Start with what is genuinely similar, then dig into the real differences no matter how subtle
+- Start with what is genuinely similar between profiles, then dig into real differences
 - Do not overstate differences — if one group is slightly different on a dimension, say slightly
 - Do not declare one profile superior overall unless clearly and consistently supported
 - Surface specific themes that appear in one group but not the other
