@@ -805,7 +805,31 @@ function renderSentimentBar(s,label){
 
 // KEYWORD EXTRACTOR
 function extractKeywords(responses,topN=12){
-  const stopWords=new Set(['the','a','an','and','or','but','in','on','at','to','for','of','with','is','it','was','i','my','me','we','they','them','this','that','have','had','not','be','are','as','so','if','do','its','our','by','from','you','your','get','got','just','very','more','some','can','all','when','about','what','would','also','their','has','been','will','up','out','no','one','like','than','then','there','her','his','him','she','he','how','but','she','were','use']);
+  const stopWords=new Set([
+    // Common English stopwords
+    'the','a','an','and','or','but','in','on','at','to','for','of','with','is','it','was','i',
+    'my','me','we','they','them','this','that','have','had','not','be','are','as','so','if',
+    'do','its','our','by','from','you','your','get','got','just','very','more','some','can',
+    'all','when','about','what','would','also','their','has','been','will','up','out','no',
+    'one','like','than','then','there','her','his','him','she','he','how','were','use','into',
+    'which','who','said','each','both','time','other','after','before','over','such','well',
+    'even','back','most','made','good','make','know','find','give','feel','want','need',
+    'could','should','often','while','since','where','these','those','only','still','being',
+    'much','many','same','first','last','long','little','few','new','own','right','through',
+    'during','always','never','any','may','might','does','did','per','yes','now','around',
+    // Survey / report boilerplate
+    'participant','participants','respondent','respondents','survey','response','report',
+    'noted','mentioned','stated','indicated','described','expressed','shared','reported',
+    'added','said','noted','found','showed','revealed','suggested','overall','general',
+    'according','based','regarding','related','including','however','therefore','although',
+    // Pear-specific obvious terms
+    'pear','pears','eating','eaten','bought','buying','purchased','purchase','tried',
+    'experience','experiences','when','they','their','about','that','with','from',
+    'tasted','tasting','fruit','fruits',
+    // Filler quality words that appear everywhere
+    'really','quite','fairly','pretty','somewhat','slightly','rather','bit','little',
+    'definitely','certainly','absolutely','completely','totally','highly','extremely'
+  ]);
   const counts={};
   responses.forEach(r=>{
     const words=String(r).toLowerCase().replace(/[^a-z\s'-]/g,'').split(/\s+/);
