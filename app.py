@@ -196,17 +196,18 @@ def pear_compare_api():
 
 You have been asked about two different pear seasons — the Argentina season and the California season — on this topic: "{question}"
 
-Below are real consumer responses from each season. Your job is to write a single first-person narrative of 220-260 words that COMPARES the two seasons.
+Below are real consumer responses from each season. Write a single first-person narrative of 220-260 words comparing the two seasons.
 
-IMPORTANT CONTEXT: The underlying sentiment data for both seasons is comparable. Both seasons show similar rates of positive and negative responses. Do NOT declare one season a winner unless the actual themes and language are meaningfully and clearly different. If the experiences are broadly similar, say so honestly. A longer or more detailed response does not mean a better experience.
+YOUR GOAL: Find the genuine nuance. Both seasons may be broadly positive, but look carefully for subtle differences in what consumers emphasised, what frustrated them, what delighted them, what language they used, and what was missing from one season but present in the other. Small but consistent differences in theme or tone are worth surfacing — they often matter more to producers than big swings in overall sentiment.
 
 RULES:
 - Speak entirely in first person as {persona_name}
-- Ground everything in the actual responses provided — do not invent opinions
-- Compare and contrast the two seasons honestly — report similarities as well as differences
-- Only highlight a difference between seasons if it is genuinely supported by the responses
-- Do not declare a winner if the experiences are broadly similar
-- Sound like a real person, warm and conversational
+- Ground everything in the actual responses — do not invent opinions not present in the data
+- Start with what is genuinely similar, then dig into the real differences no matter how subtle
+- Do not overstate differences — if one season is slightly better on a dimension, say slightly
+- Do not declare an overall winner unless the gap is clearly and consistently supported
+- Surface specific themes that appear in one season but not the other
+- Sound like a real person, warm and insightful, not like a report
 - Write flowing prose only — no bullet points, no headers
 - Do not say "many respondents said" — speak as yourself
 - If responses are mixed or negative for either season, reflect that proportionally
@@ -217,7 +218,7 @@ ARGENTINA SEASON RESPONSES ({len(arg_trimmed)} responses):
 CALIFORNIA SEASON RESPONSES ({len(cal_trimmed)} responses):
 {chr(10).join([f'[{i+1}] {r}' for i, r in enumerate(cal_trimmed)])}
 
-Now write your honest 220-260 word seasonal comparison as {persona_name}:"""
+Now write your nuanced 220-260 word seasonal comparison as {persona_name}:"""
 
     try:
         response = client.messages.create(
@@ -255,16 +256,18 @@ def pear_demo_compare_api():
 Profile A: {desc_a}
 Profile B: {desc_b}
 
-Below are real consumer responses from each group. Write a single first-person narrative of 220-260 words that COMPARES the two profiles.
+Below are real consumer responses from each group. Write a single first-person narrative of 220-260 words comparing the two profiles.
 
-IMPORTANT CONTEXT: Do NOT force a conclusion that one profile is more positive or more engaged unless the actual language and themes are clearly and meaningfully different. If the two profiles are broadly similar in their views, say so honestly — that is a valid and useful finding. A longer or more detailed response does not mean a more positive experience.
+YOUR GOAL: Find the genuine nuance. Both groups may share broadly similar views, but look carefully for subtle differences in what each group emphasised, what frustrated them, what language they used, and what was present in one group but absent in the other. Small but consistent differences in theme or tone are worth surfacing — they are often the most actionable insights.
 
 RULES:
 - Speak entirely in first person as {persona_name}
-- Ground everything in the actual responses — do not invent opinions
-- Compare and contrast honestly — report similarities as readily as differences
-- Only highlight a difference if it is genuinely supported by the actual responses
-- Sound like a real person, warm and conversational, not like a report
+- Ground everything in the actual responses — do not invent opinions not present in the data
+- Start with what is genuinely similar, then dig into the real differences no matter how subtle
+- Do not overstate differences — if one group is slightly different on a dimension, say slightly
+- Do not declare one profile superior overall unless clearly and consistently supported
+- Surface specific themes that appear in one group but not the other
+- Sound like a real person, warm and insightful, not like a report
 - Write flowing prose only — no bullet points, no headers
 - Do not say "many respondents said" — speak as yourself
 - If responses are mixed or negative for either profile, reflect that proportionally
@@ -275,7 +278,7 @@ PROFILE A RESPONSES — {desc_a} ({len(trimmed_a)} responses):
 PROFILE B RESPONSES — {desc_b} ({len(trimmed_b)} responses):
 {chr(10).join([f'[{i+1}] {r}' for i, r in enumerate(trimmed_b)])}
 
-Now write your honest 220-260 word demographic comparison as {persona_name}:"""
+Now write your nuanced 220-260 word demographic comparison as {persona_name}:"""
 
     try:
         response = client.messages.create(
